@@ -15,23 +15,23 @@
 - [x] Task: Verify code coverage >80% for the new logic
 - [x] Task: Commit code with a descriptive message and attach a git-note summary
 - [x] Task: Record the task commit SHA in this plan `[commit: b537c36]`
-- [ ] Task: Commit the plan update
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Commit the plan update
+- [x] Task: Phase Verification & Checkpoint [checkpoint: ea0d6d6] (user opted to rely on the passing integration tests)
 
 ## Phase 2 — API integration & quality gates
 
-- [ ] Task: Write failing integration tests for the API (`server/src/app.test.ts`)
-  - [ ] Test: `POST /api/projects` with a duplicate path returns `400` with an `error` matching `/already added/`
-  - [ ] Test: `POST /api/projects` for the first valid project returns `201` and `activeId === new id`
-  - [ ] Test: `POST` a second project while one is active leaves the active project unchanged
-  - [ ] Run tests and confirm the new tests pass (Green phase)
-- [ ] Task: Run full quality gates
-  - [ ] `bun run typecheck` passes
-  - [ ] `biome check .` passes
-  - [ ] Full test suite passes (`bun test`)
-- [ ] Task: Refactor (optional) and re-run the full suite
-- [ ] Task: Verify code coverage >80%
-- [ ] Task: Commit code with a descriptive message and attach a git-note summary
-- [ ] Task: Record the task commit SHA in this plan `[commit: ...]`
-- [ ] Task: Commit the plan update
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Write failing integration tests for the API (`server/src/app.test.ts`)
+  - [x] Test: `POST /api/projects` with a duplicate path returns `400` with an `error` matching `/already added/`
+  - [x] Test: `POST /api/projects` for the first valid project returns `201` and `activeId === new id`
+  - [x] Test: `POST` a second project while one is active leaves the active project unchanged
+  - [x] Run tests and confirm the new tests pass (Green phase)
+- [x] Task: Run full quality gates
+  - [x] `bun run typecheck` passes
+  - [x] `biome check .` passes
+  - [x] Full test suite passes (`bun test`)
+- [x] Task: Refactor (optional) and re-run the full suite
+- [x] Task: Verify code coverage >80%
+- [x] Task: Commit code with a descriptive message and attach a git-note summary
+- [x] Task: Record the task commit SHA in this plan `[commit: ea0d6d6]`
+- [x] Task: Commit the plan update
+- [x] Task: Phase Verification & Checkpoint [checkpoint: ea0d6d6] (user opted to rely on the passing integration tests)
