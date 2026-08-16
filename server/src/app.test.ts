@@ -7,13 +7,17 @@ import { createApp } from './app';
 import { migrate } from './db';
 
 let validPath: string;
+let validPath2: string;
 let root: string;
 
 beforeAll(async () => {
   root = await mkdtemp(join(tmpdir(), 'cb-app-'));
   validPath = join(root, 'valid');
-  await mkdir(join(validPath, '.git'), { recursive: true });
-  await mkdir(join(validPath, 'conductor'), { recursive: true });
+  validPath2 = join(root, 'valid2');
+  for (const dir of [validPath, validPath2]) {
+    await mkdir(join(dir, '.git'), { recursive: true });
+    await mkdir(join(dir, 'conductor'), { recursive: true });
+  }
 });
 
 afterAll(async () => {
@@ -83,6 +87,39 @@ describe('POST /api/projects', () => {
     const { post } = setup();
     const res = await post('/api/projects', undefined);
     expect(res.status).toBe(422);
+  });
+
+  test('rejects a duplicate path with a friendly already-added error', async () => {
+    const { post } = setup();
+    const first = await post('/api/projects', { path: validPath });
+    expect(first.status).toBe(201);
+    const res = await post('/api/projects', { path: validPath });
+    expect(res.status).toBe(400);
+    const data = (await res.json()) as { error: string };
+    expect(data.error).toMatch(/already added/i);
+  });
+
+  test('first added project becomes the active project', async () => {
+    const { post, getJson } = setup();
+    const created = await post('/api/projects', { path: validPath });
+    const record = (await created.json()) as { id: number };
+    const list = (await getJson('/api/projects')) as {
+      activeId: number | null;
+    };
+    expect(list.activeId).toBe(record.id);
+  });
+
+  test('adding a second project while one is active leaves the active unchanged', async () => {
+    const { post, getJson } = setup();
+    const first = await post('/api/projects', { path: validPath });
+    const firstRecord = (await first.json()) as { id: number };
+    const second = await post('/api/projects', { path: validPath2 });
+    const secondRecord = (await second.json()) as { id: number };
+    expect(secondRecord.id).not.toBe(firstRecord.id);
+    const list = (await getJson('/api/projects')) as {
+      activeId: number | null;
+    };
+    expect(list.activeId).toBe(firstRecord.id);
   });
 });
 

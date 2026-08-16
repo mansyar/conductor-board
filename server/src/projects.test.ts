@@ -7,8 +7,8 @@ import { migrate } from './db';
 import {
   createProjectRepository,
   isValidProjectPath,
-  sameProjectPath,
   type ProjectRepository,
+  sameProjectPath,
 } from './projects';
 
 let root: string;
