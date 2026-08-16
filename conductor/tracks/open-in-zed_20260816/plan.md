@@ -15,5 +15,7 @@
 - [x] Task: Add an **Open in Zed** button to `TrackCardView` so it renders on every track card and idle-lane entry (reuse existing `onCopy`-style affordance wiring)
 - [x] Task: Add a minimal toast surface in `Board.tsx` and show the server error message on failure
 - [x] Task: Run `bun run typecheck`, `bun run check`, and the full `bun test` suite; confirm green
-- [ ] Task: Manual verification — start dev servers, register a project, click Open in Zed (both with and without `zed` on PATH)
-- [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
+- [x] Task: Manual verification — happy path confirmed (Zed opened a worktree via the button); failure path covered by automated tests (not manually exercised)
+- [x] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
+
+[checkpoint: e91ec0a]
