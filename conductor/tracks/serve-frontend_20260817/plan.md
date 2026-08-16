@@ -5,7 +5,7 @@
 - [x] Task: Update `conductor/tech-stack.md` documenting static frontend serving
       (`@elysiajs/static`, served from `web/dist` when present) and the root `bun run serve`
       script (documented before implementation per workflow) [commit: 49bfc53]
-- [ ] Task: Add `@elysiajs/static` to `server/package.json` and install it
+- [x] Task: Add `@elysiajs/static` to `server/package.json` and install it [commit: b3d1218]
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2 — TDD: serve-gating & SPA fallback
