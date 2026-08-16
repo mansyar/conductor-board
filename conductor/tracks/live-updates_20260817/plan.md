@@ -2,22 +2,22 @@
 
 ## Phase 1 — Server-side watcher & broadcast engine
 
-- [ ] Task: Write failing unit tests for a debounce helper (`debounce.ts`)
-  - [ ] Test: multiple calls within the window invoke the callback once
-  - [ ] Test: a trailing call after the window flushes once more
-  - [ ] Run tests and confirm they fail (Red phase)
-- [ ] Task: Write failing unit tests for a `FileWatcher` (`liveUpdates.ts`)
-  - [ ] Test: registers a recursive `fs.watch` on each worktree's `conductor/` of the active project
-  - [ ] Test: a change anywhere under a watched dir emits a debounced `changed` event (500ms)
-  - [ ] Test: a missing/unwatchable worktree dir is tolerated and does not throw
-  - [ ] Test: `close()` unwatches all registered dirs and prevents further events
-  - [ ] Run tests and confirm they fail (Red phase)
-- [ ] Task: Implement `debounce.ts` and `liveUpdates.ts` to pass the failing tests (Green phase)
-- [ ] Task: Refactor (optional) and re-run the full suite
-- [ ] Task: Verify code coverage >80% for the new logic
-- [ ] Task: Commit code with a descriptive message and attach a git-note summary
-- [ ] Task: Record the task commit SHA in this plan
-- [ ] Task: Commit the plan update
+- [x] Task: Write failing unit tests for a debounce helper (`debounce.ts`)
+  - [x] Test: multiple calls within the window invoke the callback once
+  - [x] Test: a trailing call after the window flushes once more
+  - [x] Run tests and confirm they fail (Red phase)
+- [x] Task: Write failing unit tests for a `FileWatcher` (`liveUpdates.ts`)
+  - [x] Test: registers a recursive `fs.watch` on each worktree's `conductor/` of the active project
+  - [x] Test: a change anywhere under a watched dir emits a debounced `changed` event (500ms)
+  - [x] Test: a missing/unwatchable worktree dir is tolerated and does not throw
+  - [x] Test: `close()` unwatches all registered dirs and prevents further events
+  - [x] Run tests and confirm they fail (Red phase)
+- [x] Task: Implement `debounce.ts` and `liveUpdates.ts` to pass the failing tests (Green phase)
+- [x] Task: Refactor (optional) and re-run the full suite
+- [x] Task: Verify code coverage >80% for the new logic
+- [x] Task: Commit code with a descriptive message and attach a git-note summary
+- [x] Task: Record the task commit SHA in this plan `[commit: b88c25b]`
+- [x] Task: Commit the plan update
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2 — SSE integration in the Elysia app
