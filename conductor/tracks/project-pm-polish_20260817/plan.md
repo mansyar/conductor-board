@@ -2,19 +2,19 @@
 
 ## Phase 1 — Repository-level dedupe & auto-activate
 
-- [ ] Task: Write failing unit tests for dedupe + auto-activate (`server/src/projects.test.ts`)
-  - [ ] Test: `add` rejects a case-insensitive duplicate with a `/already added/` message
-  - [ ] Test: `add` auto-activates the first project when none is active
-  - [ ] Test: `add` does not auto-activate when another project is already active
-  - [ ] Run tests and confirm the new tests fail (Red phase)
-- [ ] Task: Implement dedupe + auto-activate in `server/src/projects.ts` (Green phase)
-  - [ ] Pre-check existing projects (case-insensitive compare on the resolved path) and throw a friendly `Project already added` error before insert
-  - [ ] After a successful insert, set active only when `getActive() === null`
-  - [ ] Run `server/src/projects.test.ts` and confirm all tests pass
-- [ ] Task: Refactor (optional) and re-run the suite
-- [ ] Task: Verify code coverage >80% for the new logic
-- [ ] Task: Commit code with a descriptive message and attach a git-note summary
-- [ ] Task: Record the task commit SHA in this plan `[commit: ...]`
+- [~] Task: Write failing unit tests for dedupe + auto-activate (`server/src/projects.test.ts`)
+  - [~] Test: `add` rejects a case-insensitive duplicate with a `/already added/` message
+  - [~] Test: `add` auto-activates the first project when none is active
+  - [~] Test: `add` does not auto-activate when another project is already active
+  - [~] Run tests and confirm the new tests fail (Red phase)
+- [x] Task: Implement dedupe + auto-activate in `server/src/projects.ts` (Green phase)
+  - [x] Pre-check existing projects (case-insensitive compare on the resolved path) and throw a friendly `Project already added` error before insert
+  - [x] After a successful insert, set active only when `getActive() === null`
+  - [x] Run `server/src/projects.test.ts` and confirm all tests pass
+- [x] Task: Refactor (optional) and re-run the suite
+- [x] Task: Verify code coverage >80% for the new logic
+- [x] Task: Commit code with a descriptive message and attach a git-note summary
+- [x] Task: Record the task commit SHA in this plan `[commit: b537c36]`
 - [ ] Task: Commit the plan update
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
