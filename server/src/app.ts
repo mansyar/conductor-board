@@ -2,7 +2,7 @@ import type { Database } from 'bun:sqlite';
 import { relative, resolve } from 'node:path';
 import { Elysia, t } from 'elysia';
 import { loadBoard, type ProjectReads } from './boardService';
-import { resolveWithin } from './fileAccess';
+import { isRealPathWithin, resolveWithin } from './fileAccess';
 import { createFsProjectReads } from './fsProjectReads';
 import { createProjectRepository } from './projects';
 
@@ -104,6 +104,11 @@ export function createApp(db: Database, deps?: { reads?: ProjectReads }) {
 
       const target = resolveWithin(worktree.path, filePath);
       if (target === null) {
+        set.status = 403;
+        return { error: 'Path escapes the worktree' };
+      }
+
+      if (!(await isRealPathWithin(worktree.path, target))) {
         set.status = 403;
         return { error: 'Path escapes the worktree' };
       }

@@ -170,14 +170,17 @@ function TrackCardView({ card, onOpen, onCopy }: CardProps) {
 export function Board({ activeId }: BoardProps) {
   const [board, setBoard] = useState<BoardModel | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState<ModalTarget | null>(null);
 
   const load = useCallback(async () => {
     if (activeId === null) {
       setBoard(null);
       setError(null);
+      setLoading(false);
       return;
     }
+    setLoading(true);
     try {
       const res = await fetch('/api/board');
       if (!res.ok) {
@@ -193,6 +196,8 @@ export function Board({ activeId }: BoardProps) {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load board');
       setBoard(null);
+    } finally {
+      setLoading(false);
     }
   }, [activeId]);
 
@@ -218,8 +223,12 @@ export function Board({ activeId }: BoardProps) {
     }
   }
 
-  if (activeId === null || board === null) {
+  if (activeId === null) {
     return <p className="text-sm text-zinc-500">No project selected.</p>;
+  }
+
+  if (loading && board === null) {
+    return <p className="text-sm text-zinc-500">Loading board…</p>;
   }
 
   if (error !== null) {
@@ -235,6 +244,10 @@ export function Board({ activeId }: BoardProps) {
         </button>
       </div>
     );
+  }
+
+  if (board === null) {
+    return null;
   }
 
   const { done, total, pct } = board.progress;

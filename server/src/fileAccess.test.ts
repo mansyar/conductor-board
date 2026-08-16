@@ -1,6 +1,8 @@
 import { describe, expect, test } from 'bun:test';
-import { relative, resolve } from 'node:path';
-import { resolveWithin } from './fileAccess';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, relative, resolve } from 'node:path';
+import { isRealPathWithin, resolveWithin } from './fileAccess';
 
 const root = resolve('/w/main');
 
@@ -38,5 +40,32 @@ describe('resolveWithin', () => {
 
   test('allows a path equal to the root', () => {
     expect(resolveWithin(root, '')).toBe(resolve(root));
+  });
+});
+
+describe('isRealPathWithin', () => {
+  test('accepts a real path inside the root', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'board-root-'));
+    try {
+      await mkdir(join(dir, 'sub'));
+      const inside = join(dir, 'sub', 'f.txt');
+      await writeFile(inside, 'x');
+      expect(await isRealPathWithin(dir, inside)).toBe(true);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  test('rejects a real path outside the root', async () => {
+    const rootDir = await mkdtemp(join(tmpdir(), 'board-root-'));
+    const outside = await mkdtemp(join(tmpdir(), 'board-out-'));
+    try {
+      const outsideFile = join(outside, 'secret.txt');
+      await writeFile(outsideFile, 'x');
+      expect(await isRealPathWithin(rootDir, outsideFile)).toBe(false);
+    } finally {
+      await rm(rootDir, { recursive: true, force: true });
+      await rm(outside, { recursive: true, force: true });
+    }
   });
 });
