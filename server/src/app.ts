@@ -1,5 +1,7 @@
 import type { Database } from 'bun:sqlite';
 import { Elysia, t } from 'elysia';
+import { loadBoard, type ProjectReads } from './boardService';
+import { createFsProjectReads } from './fsProjectReads';
 import { createProjectRepository } from './projects';
 
 export type App = ReturnType<typeof createApp>;
@@ -11,9 +13,11 @@ function errorMessage(error: unknown): string {
 /**
  * Builds the Elysia app bound to the given database. Used directly in tests
  * (with an in-memory DB) and by the server entrypoint (with a file-backed DB).
+ * `deps.reads` may be overridden in tests with a fake ProjectReads.
  */
-export function createApp(db: Database) {
+export function createApp(db: Database, deps?: { reads?: ProjectReads }) {
   const projects = createProjectRepository(db);
+  const reads = deps?.reads ?? createFsProjectReads();
 
   return new Elysia()
     .get('/health', () => ({ status: 'ok' }))
@@ -51,5 +55,18 @@ export function createApp(db: Database) {
         set.status = 404;
         return { error: 'Project not found' };
       }
+    })
+    .get('/api/board', async ({ set }) => {
+      const activeId = projects.getActive();
+      if (activeId === null) {
+        set.status = 409;
+        return { error: 'No active project selected' };
+      }
+      const project = projects.list().find((p) => p.id === activeId);
+      if (project === undefined) {
+        set.status = 404;
+        return { error: 'Active project not found' };
+      }
+      return await loadBoard(reads, project.path);
     });
 }

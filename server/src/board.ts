@@ -19,6 +19,8 @@ export interface TrackCard {
   /** Lifecycle column the card belongs to, or null when in the idle lane. */
   columnId: ColumnId | null;
   progress: Progress;
+  /** True when the worktree has no conductor/ directory (not initialized). */
+  notInitialized?: boolean;
 }
 
 export interface TrackSource {
@@ -32,6 +34,8 @@ export interface WorktreeGroup {
   worktree: WorktreeInfo;
   /** Tracks found in this worktree; an empty array means "idle" worktree. */
   tracks: TrackSource[];
+  /** True when the worktree has no conductor/ directory (not initialized). */
+  notInitialized?: boolean;
 }
 
 export interface Board {
@@ -78,7 +82,7 @@ export function countPlanProgress(planMd: string): Progress {
   return toProgress(done, total);
 }
 
-function idleCard(worktree: WorktreeInfo): TrackCard {
+function idleCard(worktree: WorktreeInfo, notInitialized = false): TrackCard {
   return {
     worktreePath: worktree.path,
     branch: worktree.branch,
@@ -87,6 +91,7 @@ function idleCard(worktree: WorktreeInfo): TrackCard {
     trackName: null,
     columnId: null,
     progress: ZERO_PROGRESS,
+    notInitialized,
   };
 }
 
@@ -103,7 +108,7 @@ export function composeBoard(groups: WorktreeGroup[]): Board {
 
   for (const group of groups) {
     if (group.tracks.length === 0) {
-      idle.push(idleCard(group.worktree));
+      idle.push(idleCard(group.worktree, group.notInitialized));
       continue;
     }
 
