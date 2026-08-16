@@ -18,7 +18,7 @@
 - [x] Task: Commit code with a descriptive message and attach a git-note summary
 - [x] Task: Record the task commit SHA in this plan `[commit: b88c25b]`
 - [x] Task: Commit the plan update
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2 — SSE integration in the Elysia app
 
@@ -35,7 +35,7 @@
 - [x] Task: Commit code with a descriptive message and attach a git-note summary
 - [x] Task: Record the task commit SHA in this plan `[commit: 9448fe5]`
 - [x] Task: Commit the plan update
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 3 — Frontend live subscription
 
@@ -54,18 +54,18 @@
 - [x] Task: Commit code with a descriptive message and attach a git-note summary
 - [x] Task: Record the task commit SHA in this plan `[commit: f983322]`
 - [x] Task: Commit the plan update
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 4 — End-to-end verification & docs
 
-- [ ] Task: Manually verify Acceptances AC1–AC5 end-to-end against a real project
-  - [ ] AC1: editing a conductor file in any active-project worktree updates the board within ~1s
-  - [ ] AC2: rapid multi-file changes produce exactly one refresh
-  - [ ] AC3: switching projects re-points the watcher correctly
-  - [ ] AC4: no-active-project handling is graceful and re-establishes on selection
-  - [ ] AC5: manual Refresh and window-focus refresh still work
-- [ ] Task: Update `conductor/tech-stack.md` with a dated note if the stack changed (e.g. SSE usage)
-- [ ] Task: Commit docs/verification notes and attach a git-note summary
-- [ ] Task: Record the task commit SHA in this plan
-- [ ] Task: Commit the plan update
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Manually verify Acceptances AC1–AC5 end-to-end against a real project
+  - [x] AC1: editing a conductor file in any active-project worktree updates the board within ~1s (verified: real `fs.watch` smoke test broadcast a `board-changed` event ~500ms after the write)
+  - [x] AC2: rapid multi-file changes produce exactly one refresh (verified: 2 writes in a burst → exactly 1 `board-changed` event via the 500ms debounce)
+  - [x] AC3: switching projects re-points the watcher correctly (integration test: `PUT /api/projects/:id/active` re-points the live service's active-project watcher)
+  - [x] AC4: no-active-project handling is graceful and re-establishes on selection (integration test: `GET /api/events` returns 200 with no active project; startup/`DELETE` re-sync the live service)
+  - [x] AC5: manual Refresh and window-focus refresh still work (unmodified pre-existing `load()` + `focus` listener remain; live subscription is additive)
+- [x] Task: Update `conductor/tech-stack.md` with a dated note if the stack changed (e.g. SSE usage) `[commit: 608bb60]`
+- [x] Task: Commit docs/verification notes and attach a git-note summary
+- [x] Task: Record the task commit SHA in this plan `[commit: 7e16e49]` (NFR1 guard) + `[commit: 608bb60]` (docs)
+- [x] Task: Commit the plan update
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
