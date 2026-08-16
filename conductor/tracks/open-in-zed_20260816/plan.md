@@ -11,9 +11,9 @@
 
 ## Phase 2 — Frontend Open in Zed button + toast
 
-- [ ] Task: Add a thin `openZed(worktreePath)` request helper in `web/src/` that POSTs to `/api/open-zed` and throws a normalized error
-- [ ] Task: Add an **Open in Zed** button to `TrackCardView` so it renders on every track card and idle-lane entry (reuse existing `onCopy`-style affordance wiring)
-- [ ] Task: Add a minimal toast surface in `Board.tsx` and show the server error message on failure
-- [ ] Task: Run `bun run typecheck`, `bun run check`, and the full `bun test` suite; confirm green
+- [x] Task: Add a thin `openZed(worktreePath)` request helper in `web/src/openZed.ts` that POSTs to `/api/open-zed` and throws a normalized error
+- [x] Task: Add an **Open in Zed** button to `TrackCardView` so it renders on every track card and idle-lane entry (reuse existing `onCopy`-style affordance wiring)
+- [x] Task: Add a minimal toast surface in `Board.tsx` and show the server error message on failure
+- [x] Task: Run `bun run typecheck`, `bun run check`, and the full `bun test` suite; confirm green
 - [ ] Task: Manual verification — start dev servers, register a project, click Open in Zed (both with and without `zed` on PATH)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
