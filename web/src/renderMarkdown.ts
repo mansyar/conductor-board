@@ -1,7 +1,7 @@
+import DOMPurify from 'dompurify';
+import hljs from 'highlight.js';
 import { marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
-import hljs from 'highlight.js';
-import DOMPurify from 'dompurify';
 
 marked.use(
   markedHighlight({

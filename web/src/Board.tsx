@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { COLUMN_CONFIG, COLUMN_ORDER } from './boardColumns';
 import { openZed } from './openZed';
+import { renderMarkdown } from './renderMarkdown';
 import type { Board as BoardModel, TrackCard } from './types';
 
 interface BoardProps {
@@ -88,9 +89,11 @@ function FileModal({
           ) : content === null ? (
             <p className="text-sm text-zinc-500">Loading…</p>
           ) : (
-            <pre className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-zinc-300">
-              {content}
-            </pre>
+            <div
+              className="markdown-body text-sm leading-relaxed text-zinc-300"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: html sanitized by DOMPurify inside renderMarkdown
+              dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+            />
           )}
         </div>
       </div>
