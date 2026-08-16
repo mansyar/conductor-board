@@ -84,7 +84,14 @@ export function createLiveService(deps: LiveServiceDeps): LiveService {
       const broadcastChanged = createDebounce(waitMs, () =>
         broadcast('board-changed', '{}'),
       );
-      const worktrees = await deps.listWorktrees(projectPath);
+      let worktrees: WatchedWorktree[];
+      try {
+        worktrees = await deps.listWorktrees(projectPath);
+      } catch {
+        // A project whose worktrees cannot be listed must not crash the
+        // server; it simply gets no live updates.
+        return;
+      }
       for (const worktree of worktrees) {
         try {
           const handle = deps.watch(

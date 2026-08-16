@@ -120,6 +120,22 @@ describe('createLiveService', () => {
     await expect(live.setActiveProject('/repo')).resolves.toBeUndefined();
   });
 
+  test('setActiveProject tolerates a listWorktrees failure without throwing', async () => {
+    const live: LiveService = createLiveService({
+      async listWorktrees() {
+        throw new Error('boom');
+      },
+      watch: noopWatcher,
+    });
+    const sent: string[] = [];
+    live.subscribe((message) => sent.push(message));
+
+    await expect(
+      live.setActiveProject('C:/some/broken/repo'),
+    ).resolves.toBeUndefined();
+    expect(sent).toEqual([]);
+  });
+
   test('setActiveProject(null) closes existing watchers', async () => {
     const closed: string[] = [];
     const live: LiveService = createLiveService({
