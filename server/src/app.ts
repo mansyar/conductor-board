@@ -1,6 +1,8 @@
 import type { Database } from 'bun:sqlite';
+import { relative, resolve } from 'node:path';
 import { Elysia, t } from 'elysia';
 import { loadBoard, type ProjectReads } from './boardService';
+import { resolveWithin } from './fileAccess';
 import { createFsProjectReads } from './fsProjectReads';
 import { createProjectRepository } from './projects';
 
@@ -68,5 +70,54 @@ export function createApp(db: Database, deps?: { reads?: ProjectReads }) {
         return { error: 'Active project not found' };
       }
       return await loadBoard(reads, project.path);
+    })
+    .get('/api/file', async ({ query, set }) => {
+      const qs = query as Record<string, string | undefined>;
+      const worktreeParam = qs.worktree ?? '';
+      const filePath = qs.path ?? '';
+      if (worktreeParam === '' || filePath === '') {
+        set.status = 400;
+        return { error: 'worktree and path query parameters are required' };
+      }
+
+      const activeId = projects.getActive();
+      if (activeId === null) {
+        set.status = 409;
+        return { error: 'No active project selected' };
+      }
+      const project = projects.list().find((p) => p.id === activeId);
+      if (project === undefined) {
+        set.status = 404;
+        return { error: 'Active project not found' };
+      }
+
+      const worktrees = await reads.listWorktrees(project.path);
+      const worktree = worktrees.find(
+        (w) =>
+          resolve(w.path).toLowerCase() ===
+          resolve(worktreeParam).toLowerCase(),
+      );
+      if (worktree === undefined) {
+        set.status = 404;
+        return { error: 'Worktree not found in the active project' };
+      }
+
+      const target = resolveWithin(worktree.path, filePath);
+      if (target === null) {
+        set.status = 403;
+        return { error: 'Path escapes the worktree' };
+      }
+
+      const relPath = relative(worktree.path, target);
+      let content: string;
+      try {
+        content = await reads.readTextFile(worktree.path, relPath);
+      } catch {
+        set.status = 404;
+        return { error: 'File not found' };
+      }
+      return new Response(content, {
+        headers: { 'content-type': 'text/plain; charset=utf-8' },
+      });
     });
 }
