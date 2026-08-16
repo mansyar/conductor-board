@@ -19,6 +19,10 @@
 - **React** — single-page app rendering the kanban board.
 - **Tailwind CSS** — styling.
 - **TypeScript** — throughout (backend and frontend).
+- **Markdown rendering** (added 2026-08-17) — spec/plan modals render markdown:
+  - **marked** — markdown → HTML parsing, alongside **marked-highlight** to hook in highlighting.
+  - **DOMPurify** — sanitize rendered HTML before injection.
+  - **highlight.js** — syntax highlighting for fenced code blocks (board-dark theme).
 
 ## Testing
 
