@@ -109,9 +109,9 @@ export function createProjectRepository(db: Database): ProjectRepository {
         throw new Error(`Not a git repo with a conductor/ directory: ${path}`);
       }
       const resolved = resolve(path);
-      const alreadyAdded = selectAll.all().some((row) =>
-        sameProjectPath((row as ProjectRow).path, resolved),
-      );
+      const alreadyAdded = selectAll
+        .all()
+        .some((row) => sameProjectPath((row as ProjectRow).path, resolved));
       if (alreadyAdded) {
         throw new Error(`Project already added: ${path}`);
       }
