@@ -26,6 +26,8 @@ type SpawnLike = (
  * `spawnFn` is injected by tests.
  */
 export function createZedRunner(
+  // Cast required: Node's ChildProcess.on overloads don't structurally match
+  // the minimal SpawnLike shape; asserting keeps the runner injectable in tests.
   spawnFn: SpawnLike = spawn as unknown as SpawnLike,
 ): ZedRunner {
   return {
