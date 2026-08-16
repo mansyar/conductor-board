@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { COLUMN_CONFIG, COLUMN_ORDER } from './boardColumns';
+import { openZed } from './openZed';
 import type { Board as BoardModel, TrackCard } from './types';
 
 interface BoardProps {
@@ -101,9 +102,10 @@ interface CardProps {
   card: TrackCard;
   onOpen: (kind: ModalKind) => void;
   onCopy: () => void;
+  onOpenZed: () => void;
 }
 
-function TrackCardView({ card, onOpen, onCopy }: CardProps) {
+function TrackCardView({ card, onOpen, onCopy, onOpenZed }: CardProps) {
   const columnColor =
     card.columnId === null ? '' : COLUMN_CONFIG[card.columnId].bar;
   const branch = card.detached ? 'detached' : card.branch;
@@ -162,6 +164,13 @@ function TrackCardView({ card, onOpen, onCopy }: CardProps) {
         >
           Copy path
         </button>
+        <button
+          type="button"
+          onClick={onOpenZed}
+          className="text-zinc-500 hover:text-zinc-100"
+        >
+          Open in Zed
+        </button>
       </div>
     </div>
   );
@@ -172,6 +181,8 @@ export function Board({ activeId }: BoardProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState<ModalTarget | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<number | null>(null);
 
   const load = useCallback(async () => {
     if (activeId === null) {
@@ -215,11 +226,35 @@ export function Board({ activeId }: BoardProps) {
     };
   }, [load]);
 
+  function showToast(message: string) {
+    setToast(message);
+    if (toastTimer.current !== null) {
+      window.clearTimeout(toastTimer.current);
+    }
+    toastTimer.current = window.setTimeout(() => setToast(null), 5000);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (toastTimer.current !== null) {
+        window.clearTimeout(toastTimer.current);
+      }
+    };
+  }, []);
+
   async function copyPath(card: TrackCard) {
     try {
       await navigator.clipboard.writeText(card.worktreePath);
     } catch {
       // Clipboard unavailable; ignore.
+    }
+  }
+
+  async function openInZed(card: TrackCard) {
+    try {
+      await openZed(card.worktreePath);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Could not launch Zed');
     }
   }
 
@@ -300,6 +335,7 @@ export function Board({ activeId }: BoardProps) {
                           })
                         }
                         onCopy={() => void copyPath(card)}
+                        onOpenZed={() => void openInZed(card)}
                       />
                     ))
                   )}
@@ -324,6 +360,7 @@ export function Board({ activeId }: BoardProps) {
                 card={card}
                 onOpen={() => undefined}
                 onCopy={() => void copyPath(card)}
+                onOpenZed={() => void openInZed(card)}
               />
             ))}
           </div>
@@ -332,6 +369,23 @@ export function Board({ activeId }: BoardProps) {
 
       {modal !== null && (
         <FileModal target={modal} onClose={() => setModal(null)} />
+      )}
+
+      {toast !== null && (
+        <div
+          role="alert"
+          className="fixed bottom-4 right-4 z-50 flex max-w-sm items-start gap-3 rounded-md border border-red-900/60 bg-zinc-950 px-4 py-3 text-sm text-red-300 shadow-lg"
+        >
+          <span>{toast}</span>
+          <button
+            type="button"
+            onClick={() => setToast(null)}
+            className="shrink-0 text-zinc-500 hover:text-zinc-200"
+            aria-label="Dismiss"
+          >
+            ✕
+          </button>
+        </div>
       )}
     </div>
   );
