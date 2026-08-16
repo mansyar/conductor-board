@@ -29,21 +29,21 @@
 - [x] Task: Build frontend project picker + add form + switch `1f2e2d1`
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `1f2e2d1`
 
-### Phase 3 — Worktree Discovery & Phase Detection *(core logic)*
+### Phase 3 — Worktree Discovery & Phase Detection `[checkpoint: 65d0c70]` *(core logic)*
 
-- [ ] Task: Parse `git -C <project> worktree list --porcelain`
-  - [ ] Write tests for porcelain parsing (paths, branches, detached HEAD)
-  - [ ] Implement parser
-- [ ] Task: Parse `conductor/tracks.md` entries + checkbox states
-  - [ ] Write tests for entry/checkbox parsing
-  - [ ] Implement parser
-- [ ] Task: Classify phase from checkbox + archive folder location
-  - [ ] Write tests covering all four stages + archive edge cases
-  - [ ] Implement classifier
-- [ ] Task: Compose the board model (columns, cards, idle lane, progress `done/total/pct`)
-  - [ ] Write tests (one-card-per-track, multi-track worktree, idle worktree)
-  - [ ] Implement composer
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Parse `git -C <project> worktree list --porcelain` `a647a26`
+  - [x] Write tests for porcelain parsing (paths, branches, detached HEAD) `a647a26`
+  - [x] Implement parser `a647a26`
+- [x] Task: Parse `conductor/tracks.md` entries + checkbox states `0d052ed`
+  - [x] Write tests for entry/checkbox parsing (active, complete, idle) `0d052ed`
+  - [x] Implement parser `0d052ed`
+- [x] Task: Classify phase from checkbox + archive folder location `29ab424`
+  - [x] Write tests covering all four stages + archive edge cases `29ab424`
+  - [x] Implement classifier `29ab424`
+- [x] Task: Compose the board model (columns, cards, idle lane, progress `done/total/pct`) `65d0c70`
+  - [x] Write tests (one-card-per-track, multi-track worktree, idle worktree) `65d0c70`
+  - [x] Implement composer `65d0c70`
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `65d0c70`
 
 ### Phase 4 — Board API & File Serving
 
