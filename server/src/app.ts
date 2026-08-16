@@ -4,6 +4,7 @@ import { Elysia, t } from 'elysia';
 import { loadBoard, type ProjectReads } from './boardService';
 import { isRealPathWithin, resolveWithin } from './fileAccess';
 import { createFsProjectReads } from './fsProjectReads';
+import { createZedRunner, type ZedRunner } from './openZed';
 import { createProjectRepository } from './projects';
 
 export type App = ReturnType<typeof createApp>;
@@ -15,11 +16,15 @@ function errorMessage(error: unknown): string {
 /**
  * Builds the Elysia app bound to the given database. Used directly in tests
  * (with an in-memory DB) and by the server entrypoint (with a file-backed DB).
- * `deps.reads` may be overridden in tests with a fake ProjectReads.
+ * `deps.reads` and `deps.zed` may be overridden in tests with fakes.
  */
-export function createApp(db: Database, deps?: { reads?: ProjectReads }) {
+export function createApp(
+  db: Database,
+  deps?: { reads?: ProjectReads; zed?: ZedRunner },
+) {
   const projects = createProjectRepository(db);
   const reads = deps?.reads ?? createFsProjectReads();
+  const zed = deps?.zed ?? createZedRunner();
 
   return new Elysia()
     .get('/health', () => ({ status: 'ok' }))
@@ -71,6 +76,44 @@ export function createApp(db: Database, deps?: { reads?: ProjectReads }) {
       }
       return await loadBoard(reads, project.path);
     })
+    .post(
+      '/api/open-zed',
+      async ({ body, set }) => {
+        const activeId = projects.getActive();
+        if (activeId === null) {
+          set.status = 409;
+          return { error: 'No active project selected' };
+        }
+        const project = projects.list().find((p) => p.id === activeId);
+        if (project === undefined) {
+          set.status = 404;
+          return { error: 'Active project not found' };
+        }
+
+        const worktrees = await reads.listWorktrees(project.path);
+        const worktree = worktrees.find(
+          (w) =>
+            resolve(w.path).toLowerCase() ===
+            resolve(body.path).toLowerCase(),
+        );
+        if (worktree === undefined) {
+          set.status = 404;
+          return { error: 'Worktree not found in the active project' };
+        }
+
+        try {
+          await zed.open(worktree.path);
+        } catch {
+          set.status = 503;
+          return {
+            error:
+              'Could not launch Zed. Ensure the `zed` CLI is installed and on your PATH.',
+          };
+        }
+        return { opened: true, path: worktree.path };
+      },
+      { body: t.Object({ path: t.String() }) },
+    )
     .get('/api/file', async ({ query, set }) => {
       const qs = query as Record<string, string | undefined>;
       const worktreeParam = qs.worktree ?? '';
