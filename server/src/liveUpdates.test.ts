@@ -39,6 +39,24 @@ describe('createLiveService', () => {
     expect(received).toHaveLength(1);
   });
 
+  test('broadcast fans out to every connected client', () => {
+    const live: LiveService = createLiveService({
+      async listWorktrees() {
+        return [];
+      },
+      watch: noopWatcher,
+    });
+    const first: string[] = [];
+    const second: string[] = [];
+    live.subscribe((message) => first.push(message));
+    live.subscribe((message) => second.push(message));
+
+    live.broadcast('board-changed', '{}');
+    const expected = 'event: board-changed\ndata: {}\n\n';
+    expect(first).toEqual([expected]);
+    expect(second).toEqual([expected]);
+  });
+
   test('setActiveProject watches each worktree conductor dir recursively', async () => {
     const watched: string[] = [];
     const live: LiveService = createLiveService({

@@ -22,19 +22,19 @@
 
 ## Phase 2 — SSE integration in the Elysia app
 
-- [ ] Task: Write failing tests for the SSE endpoint and project-switch wiring (`app.ts` / `appLive.test.ts`)
-  - [ ] Test: `GET /api/events` returns a `text/event-stream` stream and keeps the connection open
-  - [ ] Test: with a fake watcher + fake stream, a watcher `changed` event produces a `board-changed` SSE message to connected clients
-  - [ ] Test: with no active project the endpoint does not stream an error on every connect (graceful)
-  - [ ] Test: `PUT /api/projects/:id/active` tears down the old watcher and registers one for the new active project's worktrees
-  - [ ] Test: multiple connected clients each receive the broadcast
-  - [ ] Run tests and confirm they fail (Red phase)
-- [ ] Task: Implement SSE route and watcher lifecycle wiring to pass the tests (Green phase)
-- [ ] Task: Refactor (optional) and re-run the full suite
-- [ ] Task: Verify code coverage >80%
-- [ ] Task: Commit code with a descriptive message and attach a git-note summary
-- [ ] Task: Record the task commit SHA in this plan
-- [ ] Task: Commit the plan update
+- [x] Task: Write failing tests for the SSE endpoint and project-switch wiring (`app.ts` / `appLive.test.ts`)
+  - [x] Test: `GET /api/events` returns a `text/event-stream` stream and keeps the connection open
+  - [x] Test: with a fake watcher + fake stream, a watcher `changed` event produces a `board-changed` SSE message to connected clients
+  - [x] Test: with no active project the endpoint does not stream an error on every connect (graceful)
+  - [x] Test: `PUT /api/projects/:id/active` tears down the old watcher and registers one for the new active project's worktrees
+  - [x] Test: multiple connected clients each receive the broadcast
+  - [x] Run tests and confirm they fail (Red phase)
+- [x] Task: Implement SSE route and watcher lifecycle wiring to pass the tests (Green phase)
+- [x] Task: Refactor (optional) and re-run the full suite
+- [x] Task: Verify code coverage >80%
+- [x] Task: Commit code with a descriptive message and attach a git-note summary
+- [x] Task: Record the task commit SHA in this plan `[commit: 9448fe5]`
+- [x] Task: Commit the plan update
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 3 — Frontend live subscription
