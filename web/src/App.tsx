@@ -1,15 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-
-interface Project {
-  id: number;
-  path: string;
-  createdAt: string;
-}
-
-interface ProjectsResponse {
-  projects: Project[];
-  activeId: number | null;
-}
+import { Board } from './Board';
+import type { Project, ProjectsResponse } from './types';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -27,9 +18,8 @@ export function App() {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [path, setPath] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  const refresh = useCallback(async () => {
+  const refreshProjects = useCallback(async () => {
     try {
       const data = await fetchJson<ProjectsResponse>('/api/projects');
       setProjects(data.projects);
@@ -37,14 +27,12 @@ export function App() {
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load projects');
-    } finally {
-      setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    void refreshProjects();
+  }, [refreshProjects]);
 
   async function addProject() {
     if (path.trim() === '') {
@@ -57,7 +45,7 @@ export function App() {
         body: JSON.stringify({ path: path.trim() }),
       });
       setPath('');
-      await refresh();
+      await refreshProjects();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add project');
     }
@@ -67,91 +55,98 @@ export function App() {
     await fetchJson<{ removed: boolean }>(`/api/projects/${id}`, {
       method: 'DELETE',
     });
-    await refresh();
+    await refreshProjects();
   }
 
   async function switchProject(id: number) {
     await fetchJson<{ activeId: number }>(`/api/projects/${id}/active`, {
       method: 'PUT',
     });
-    await refresh();
+    await refreshProjects();
   }
+
+  const activeProject = projects.find((p) => p.id === activeId);
 
   return (
     <main className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="mx-auto max-w-2xl px-6 py-10">
-        <header className="mb-8">
+      <div className="mx-auto max-w-6xl px-6 py-8">
+        <header className="mb-6 flex flex-wrap items-baseline justify-between gap-2">
           <h1 className="text-lg font-medium">Conductor Board</h1>
-          <p className="text-sm text-zinc-500">Projects</p>
+          <p className="text-sm text-zinc-500">
+            {activeProject !== undefined
+              ? activeProject.path
+              : 'No project selected'}
+          </p>
         </header>
 
-        <form
-          className="mb-8 flex gap-2"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void addProject();
-          }}
-        >
-          <input
-            type="text"
-            value={path}
-            onChange={(event) => setPath(event.target.value)}
-            placeholder="Path to a git repo with conductor/"
-            className="min-w-0 flex-1 rounded border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm placeholder:text-zinc-600 focus:outline-none focus:border-zinc-600"
-          />
-          <button
-            type="submit"
-            className="rounded bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-white"
+        <section className="mb-8 space-y-3">
+          <form
+            className="flex gap-2"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void addProject();
+            }}
           >
-            Add project
-          </button>
-        </form>
+            <input
+              type="text"
+              value={path}
+              onChange={(event) => setPath(event.target.value)}
+              placeholder="Add a git repo with conductor/…"
+              className="min-w-0 flex-1 rounded border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm placeholder:text-zinc-600 focus:outline-none focus:border-zinc-600"
+            />
+            <button
+              type="submit"
+              className="rounded bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-white"
+            >
+              Add
+            </button>
+          </form>
 
-        {error !== null && (
-          <p className="mb-6 rounded border border-red-900/60 bg-red-950/40 px-3 py-2 text-sm text-red-300">
-            {error}
-          </p>
-        )}
+          {error !== null && (
+            <p className="rounded border border-red-900/60 bg-red-950/40 px-3 py-2 text-sm text-red-300">
+              {error}
+            </p>
+          )}
 
-        {loading ? (
-          <p className="text-sm text-zinc-500">Loading…</p>
-        ) : projects.length === 0 ? (
-          <p className="text-sm text-zinc-500">No projects yet.</p>
-        ) : (
-          <ul className="space-y-2">
-            {projects.map((project) => (
-              <li
-                key={project.id}
-                className="flex items-center justify-between gap-3 rounded border border-zinc-800 bg-zinc-900/60 px-3 py-2"
-              >
-                <div className="min-w-0">
-                  <p className="truncate text-sm">{project.path}</p>
-                  {project.id === activeId && (
-                    <p className="text-xs text-emerald-400">Active</p>
-                  )}
-                </div>
-                <div className="flex shrink-0 items-center gap-2">
-                  {project.id !== activeId && (
+          {projects.length > 0 && (
+            <ul className="flex flex-wrap gap-2">
+              {projects.map((project) => (
+                <li key={project.id}>
+                  <div
+                    className={`inline-flex max-w-80 items-center overflow-hidden rounded border ${
+                      project.id === activeId
+                        ? 'border-zinc-100'
+                        : 'border-zinc-800'
+                    }`}
+                  >
                     <button
                       type="button"
                       onClick={() => void switchProject(project.id)}
-                      className="text-sm text-zinc-400 hover:text-zinc-100"
+                      className={`min-w-0 flex-1 truncate px-3 py-1 text-left text-sm ${
+                        project.id === activeId
+                          ? 'text-zinc-100'
+                          : 'text-zinc-400 hover:text-zinc-100'
+                      }`}
+                      title={project.path}
                     >
-                      Set active
+                      {project.path}
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => void removeProject(project.id)}
-                    className="text-sm text-zinc-500 hover:text-red-400"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+                    <button
+                      type="button"
+                      aria-label={`Remove ${project.path}`}
+                      onClick={() => void removeProject(project.id)}
+                      className="px-2 py-1 text-sm text-zinc-600 hover:text-red-400"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <Board activeId={activeId} />
       </div>
     </main>
   );
