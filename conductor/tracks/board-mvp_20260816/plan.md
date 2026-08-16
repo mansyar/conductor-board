@@ -54,11 +54,11 @@
   - [x] Implement endpoint `1ea4bee`
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `1ea4bee`
 
-### Phase 5 — Board UI
+### Phase 5 — Board UI `[checkpoint: 92f5890]`
 
-- [ ] Task: Render four kanban columns + Idle lane
-- [ ] Task: Build track card (worktree + branch, track name/id, progress)
-- [ ] Task: Build action affordances (open spec/plan modals, copy path)
-- [ ] Task: Refresh on tab focus + manual button
-- [ ] Task: Error/empty/"not initialized" states + styling per product-guidelines
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Render four kanban columns + Idle lane `92f5890`
+- [x] Task: Build track card (worktree + branch, track name/id, progress) `92f5890`
+- [x] Task: Build action affordances (open spec/plan modals, copy path) `92f5890`
+- [x] Task: Refresh on tab focus + manual button `92f5890`
+- [x] Task: Error/empty/"not initialized" states + styling per product-guidelines `92f5890`
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `92f5890`
