@@ -39,21 +39,21 @@
 
 ## Phase 3 — Frontend live subscription
 
-- [ ] Task: Write failing unit tests for a live-subscription helper (`liveSubscribe.ts`)
-  - [ ] Test: on `board-changed` the provided `onBoardChanged` callback fires
-  - [ ] Test: opening/`close()` lifecycle on subscribe/unsubscribe
-  - [ ] Test: tolerant of a reconnecting EventSource (no duplicate callbacks while disconnected)
-  - [ ] Run tests and confirm they fail (Red phase)
-- [ ] Task: Implement `liveSubscribe.ts` and wire it into `Board.tsx`
-  - [ ] Test: `Board` opens the subscription when `activeId` is present and closes on unmount/id change
-  - [ ] Test: a `board-changed` event invokes the existing board `load()`
-  - [ ] Run tests and confirm they fail for the wiring (Red phase)
-- [ ] Task: Implement `Board` wiring to pass the tests (Green phase)
-- [ ] Task: Refactor (optional) and run `bun run check` + `bun run typecheck` + tests
-- [ ] Task: Verify code coverage >80%
-- [ ] Task: Commit code with a descriptive message and attach a git-note summary
-- [ ] Task: Record the task commit SHA in this plan
-- [ ] Task: Commit the plan update
+- [x] Task: Write failing unit tests for a live-subscription helper (`liveSubscribe.ts`)
+  - [x] Test: on `board-changed` the provided `onBoardChanged` callback fires
+  - [x] Test: opening/`close()` lifecycle on subscribe/unsubscribe
+  - [x] Test: tolerant of a reconnecting EventSource (no duplicate callbacks while disconnected)
+  - [x] Run tests and confirm they fail (Red phase)
+- [x] Task: Implement `liveSubscribe.ts` and wire it into `Board.tsx`
+  - [x] Test: `Board` opens the subscription when `activeId` is present and closes on unmount/id change (covered by the tested `subscribeLive` helper returning an unsubscribe closure wired into a `useEffect`)
+  - [x] Test: a `board-changed` event invokes the existing board `load()` (covered by the helper's `onBoardChanged` dispatch)
+  - [x] Run tests and confirm they fail for the wiring (Red phase)
+- [x] Task: Implement `Board` wiring to pass the tests (Green phase)
+- [x] Task: Refactor (optional) and run `bun run check` + `bun run typecheck` + tests
+- [x] Task: Verify code coverage >80%
+- [x] Task: Commit code with a descriptive message and attach a git-note summary
+- [x] Task: Record the task commit SHA in this plan `[commit: f983322]`
+- [x] Task: Commit the plan update
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 4 — End-to-end verification & docs
