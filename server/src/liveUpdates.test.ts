@@ -136,6 +136,35 @@ describe('createLiveService', () => {
     expect(sent).toEqual([]);
   });
 
+  test('a superseded setActiveProject does not register stale watchers', async () => {
+    const watchedDirs: string[] = [];
+    let releaseFirst: () => void = () => {};
+    const firstGate = new Promise<void>((resolve) => {
+      releaseFirst = resolve;
+    });
+    const live: LiveService = createLiveService({
+      debounceWaitMs: 10,
+      async listWorktrees(projectPath) {
+        if (projectPath === 'A') {
+          await firstGate;
+          return [{ path: 'A' }];
+        }
+        return [{ path: 'B' }];
+      },
+      watch(dir) {
+        watchedDirs.push(dir);
+        return { close() {} };
+      },
+    });
+
+    const first = live.setActiveProject('A');
+    await live.setActiveProject('B');
+    releaseFirst();
+    await first;
+
+    expect(watchedDirs).toEqual([join('B', 'conductor')]);
+  });
+
   test('setActiveProject(null) closes existing watchers', async () => {
     const closed: string[] = [];
     const live: LiveService = createLiveService({

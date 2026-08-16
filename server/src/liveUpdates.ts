@@ -47,6 +47,7 @@ export function createLiveService(deps: LiveServiceDeps): LiveService {
   const waitMs = deps.debounceWaitMs ?? 500;
   const clients = new Set<(message: string) => void>();
   let watchers: WatchHandle[] = [];
+  let activeRequest = 0;
 
   /** Fan a formatted message out to every connected client. */
   function broadcast(event: string, data: string): void {
@@ -76,6 +77,7 @@ export function createLiveService(deps: LiveServiceDeps): LiveService {
     },
 
     async setActiveProject(projectPath) {
+      const request = ++activeRequest;
       stopWatchers();
       if (projectPath === null) {
         return;
@@ -90,6 +92,10 @@ export function createLiveService(deps: LiveServiceDeps): LiveService {
       } catch {
         // A project whose worktrees cannot be listed must not crash the
         // server; it simply gets no live updates.
+        return;
+      }
+      // A newer switch may have run while we awaited; drop our stale result.
+      if (request !== activeRequest) {
         return;
       }
       for (const worktree of worktrees) {
