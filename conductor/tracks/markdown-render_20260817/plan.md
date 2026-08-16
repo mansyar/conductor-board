@@ -39,3 +39,6 @@ Track: `markdown-render_20260817`
 [checkpoint: `405f851`]
 
 _Phase 1 commit: `d3fa97d`_
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions b9722c8
