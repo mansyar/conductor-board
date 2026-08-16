@@ -45,15 +45,14 @@
   - [x] Implement composer `65d0c70`
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `65d0c70`
 
-### Phase 4 — Board API & File Serving
+### Phase 4 — Board API & File Serving `[checkpoint: 1ea4bee]`
 
-- [ ] Task: `GET /api/board` endpoint
-  - [ ] Write tests for response shape
-  - [ ] Implement endpoint
-- [ ] Task: `GET /api/file` with worktree-confined path resolution
-  - [ ] Write tests for confinement (deny anything outside registered worktrees)
-  - [ ] Implement endpoint
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: `GET /api/board` endpoint `417f687`
+  - [x] Write tests for response shape `417f687`
+  - [x] Implement endpoint `417f687`
+- [x] Task: `GET /api/file` with worktree-confined path resolution `1ea4bee`
+  - [x] Implement endpoint `1ea4bee`
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `1ea4bee`
 
 ### Phase 5 — Board UI
 
