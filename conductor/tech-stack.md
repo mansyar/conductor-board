@@ -4,6 +4,8 @@
 
 - **Bun** — runtime, package manager, and test runner.
 - **Zed** — primary editor/IDE (board actions open worktrees in Zed).
+  The board opens a worktree by spawning `zed <path>` via `node:child_process`;
+  the `zed` CLI must be on the PATH of the process running the server.
 - **git** — version control, with linked worktrees as the core workflow.
 - **Biome** — linter and formatter.
 
