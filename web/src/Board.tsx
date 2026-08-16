@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { COLUMN_CONFIG, COLUMN_ORDER } from './boardColumns';
+import { subscribeLive } from './liveSubscribe';
 import { openZed } from './openZed';
 import { renderMarkdown } from './renderMarkdown';
 import type { Board as BoardModel, TrackCard } from './types';
@@ -228,6 +229,17 @@ export function Board({ activeId }: BoardProps) {
       window.removeEventListener('focus', onFocus);
     };
   }, [load]);
+
+  // Live updates: re-fetch the board whenever the server broadcasts that a
+  // conductor file changed. Closes the stream on unmount or project switch.
+  useEffect(() => {
+    if (activeId === null) {
+      return;
+    }
+    return subscribeLive('/api/events', () => {
+      void load();
+    });
+  }, [activeId, load]);
 
   function showToast(message: string) {
     setToast(message);
