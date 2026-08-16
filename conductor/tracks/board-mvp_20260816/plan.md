@@ -8,11 +8,11 @@
 
 ### Phase 1 — Project Scaffolding *(no logic; no tests)*
 
-- [ ] Task: Initialize Bun workspaces monorepo (root `package.json`, `server/`, `web/`)
-- [ ] Task: Scaffold ElysiaJS server with a `/health` endpoint
-- [ ] Task: Scaffold Vite + React + Tailwind + TypeScript web app
-- [ ] Task: Configure Biome (linter + formatter) at workspace root
-- [ ] Task: Wire dev scripts (`bun run dev` boots server + web together)
+- [x] Task: Initialize Bun workspaces monorepo (root `package.json`, `server/`, `web/`) `c33c76a`
+- [x] Task: Scaffold ElysiaJS server with a `/health` endpoint `c33c76a`
+- [x] Task: Scaffold Vite + React + Tailwind + TypeScript web app `c33c76a`
+- [x] Task: Configure Biome (linter + formatter) at workspace root `c33c76a`
+- [x] Task: Wire dev scripts (`bun run dev` boots server + web together) `c33c76a`
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ### Phase 2 — Persistence & Project Management
