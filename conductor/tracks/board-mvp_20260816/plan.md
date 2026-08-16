@@ -6,14 +6,14 @@
 
 ---
 
-### Phase 1 — Project Scaffolding *(no logic; no tests)*
+### Phase 1 — Project Scaffolding *(no logic; no tests)* `[checkpoint: c33c76a]`
 
 - [x] Task: Initialize Bun workspaces monorepo (root `package.json`, `server/`, `web/`) `c33c76a`
 - [x] Task: Scaffold ElysiaJS server with a `/health` endpoint `c33c76a`
 - [x] Task: Scaffold Vite + React + Tailwind + TypeScript web app `c33c76a`
 - [x] Task: Configure Biome (linter + formatter) at workspace root `c33c76a`
 - [x] Task: Wire dev scripts (`bun run dev` boots server + web together) `c33c76a`
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `c33c76a`
 
 ### Phase 2 — Persistence & Project Management
 
