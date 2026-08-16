@@ -13,6 +13,10 @@
 
 - **ElysiaJS** — type-safe HTTP framework serving the JSON API and static frontend.
 - **bun:sqlite** — built-in SQLite driver for persistence (projects + settings).
+- **Live board updates via Server-Sent Events** (added 2026-08-17) — `GET /api/events`
+  streams `board-changed` events over SSE. A recursive `fs.watch` monitors the active
+  project's worktree `conductor/` directories (500ms debounced) and the SPA re-fetches
+  `/api/board` on each event. Manual Refresh + window-focus refresh remain as fallbacks.
 
 ## Frontend
 
