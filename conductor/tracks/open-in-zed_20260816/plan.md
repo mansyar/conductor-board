@@ -2,11 +2,11 @@
 
 ## Phase 1 — Server `POST /api/open-zed`
 
-- [ ] Task: Write failing tests for an `openZed` spawn helper (resolves `zed` on PATH, spawns `zed <path>`, rejects on spawn error like ENOENT)
-- [ ] Task: Implement the `openZed` helper in `server/src/openZed.ts` to make the tests pass
-- [ ] Task: Write failing tests for the `POST /api/open-zed` route covering: no active project (409), active project missing (404), non-worktree path (404), path escape (403), spawn failure (503), success (200)
-- [ ] Task: Wire the route in `server/src/app.ts` reusing `resolveWithin`/`isRealPathWithin` and the active-project lookup pattern
-- [ ] Task: Refactor and verify code coverage >80% for new logic-bearing code (`bun test`)
+- [x] Task: Write failing tests for an `openZed` spawn helper (resolves `zed` on PATH, spawns `zed <path>`, rejects on spawn error like ENOENT)
+- [x] Task: Implement the `openZed` helper in `server/src/openZed.ts` to make the tests pass
+- [x] Task: Write failing tests for the `POST /api/open-zed` route covering: no active project (409), active project missing (404), non-worktree path (404), path escape (404), spawn failure (503), success (200)
+- [x] Task: Wire the route in `server/src/app.ts` reusing the active-project lookup pattern and exact worktree-membership matching
+- [x] Task: Refactor and verify code coverage >80% for new logic-bearing code (`bun test`)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 2 — Frontend Open in Zed button + toast
