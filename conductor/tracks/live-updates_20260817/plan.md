@@ -69,3 +69,6 @@
 - [x] Task: Record the task commit SHA in this plan `[commit: 7e16e49]` (NFR1 guard) + `[commit: 608bb60]` (docs)
 - [x] Task: Commit the plan update
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions `[commit: 00ce9ba]`
