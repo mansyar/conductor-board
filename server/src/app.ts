@@ -93,8 +93,7 @@ export function createApp(
         const worktrees = await reads.listWorktrees(project.path);
         const worktree = worktrees.find(
           (w) =>
-            resolve(w.path).toLowerCase() ===
-            resolve(body.path).toLowerCase(),
+            resolve(w.path).toLowerCase() === resolve(body.path).toLowerCase(),
         );
         if (worktree === undefined) {
           set.status = 404;

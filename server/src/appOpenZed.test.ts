@@ -12,8 +12,14 @@ let root: string;
 let validPath: string;
 let libPath: string;
 
-const mainWorktree = { path: validPath, branch: 'main', detached: false };
-const libWorktree = { path: libPath, branch: 'lib', detached: false };
+interface WorktreeFixture {
+  path: string;
+  branch: string;
+  detached: boolean;
+}
+
+let mainWorktree: WorktreeFixture;
+let libWorktree: WorktreeFixture;
 
 beforeAll(async () => {
   root = await mkdtemp(join(tmpdir(), 'cb-openzed-'));
@@ -21,15 +27,17 @@ beforeAll(async () => {
   await mkdir(join(validPath, '.git'), { recursive: true });
   await mkdir(join(validPath, 'conductor'), { recursive: true });
   libPath = join(root, 'lib');
-  mainWorktree.path = validPath;
-  libWorktree.path = libPath;
+  mainWorktree = { path: validPath, branch: 'main', detached: false };
+  libWorktree = { path: libPath, branch: 'lib', detached: false };
 });
 
 afterAll(async () => {
   await rm(root, { recursive: true, force: true });
 });
 
-function fakeReads(worktrees = [mainWorktree]): ProjectReads {
+function fakeReads(
+  worktrees: WorktreeFixture[] = [mainWorktree],
+): ProjectReads {
   return {
     listWorktrees: async () => worktrees,
     readTextFile: async () => '',
@@ -38,7 +46,7 @@ function fakeReads(worktrees = [mainWorktree]): ProjectReads {
 }
 
 interface SetupOpts {
-  worktrees?: typeof mainWorktree[];
+  worktrees?: WorktreeFixture[];
   zedRejects?: boolean;
 }
 
@@ -114,8 +122,8 @@ describe('POST /api/open-zed', () => {
     const { post, put } = setup();
     await addActive(post, put);
 
-    const escape = join(validPath, '..', '..', 'outside');
-    const res = await post('/api/open-zed', { path: escape });
+    const escapePath = join(validPath, '..', '..', 'outside');
+    const res = await post('/api/open-zed', { path: escapePath });
     expect(res.status).toBe(404);
   });
 
