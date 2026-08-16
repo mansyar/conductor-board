@@ -2,9 +2,9 @@
 
 ## Phase 1 — Static-serving design & dependency
 
-- [ ] Task: Update `conductor/tech-stack.md` documenting static frontend serving
+- [x] Task: Update `conductor/tech-stack.md` documenting static frontend serving
       (`@elysiajs/static`, served from `web/dist` when present) and the root `bun run serve`
-      script (documented before implementation per workflow)
+      script (documented before implementation per workflow) [commit: 49bfc53]
 - [ ] Task: Add `@elysiajs/static` to `server/package.json` and install it
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
