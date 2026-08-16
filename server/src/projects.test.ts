@@ -7,6 +7,7 @@ import { migrate } from './db';
 import {
   createProjectRepository,
   isValidProjectPath,
+  sameProjectPath,
   type ProjectRepository,
 } from './projects';
 
@@ -122,5 +123,64 @@ describe('project repository CRUD', () => {
     repo.setActive(project.id);
     repo.remove(project.id);
     expect(repo.getActive()).toBeNull();
+  });
+});
+
+describe('sameProjectPath', () => {
+  test('matches identical resolved paths', () => {
+    expect(sameProjectPath(root, root)).toBe(true);
+  });
+
+  test('matches paths differing only by case (Windows-first)', () => {
+    expect(sameProjectPath(join(root, 'VALID'), join(root, 'valid'))).toBe(
+      true,
+    );
+  });
+
+  test('normalizes trailing separators', () => {
+    expect(sameProjectPath(`${root}/`, root)).toBe(true);
+  });
+
+  test('distinguishes different paths', () => {
+    expect(sameProjectPath(join(root, 'a'), join(root, 'b'))).toBe(false);
+  });
+});
+
+// Each test uses a fresh repository and directory so auto-activation state is
+// never coupled between cases.
+function makeFreshRepoAndDir(name: string): Promise<{
+  repo: ProjectRepository;
+  dir: string;
+}> {
+  const dir = join(root, `auto-${name}`);
+  return (async () => {
+    await mkdir(join(dir, '.git'), { recursive: true });
+    await mkdir(join(dir, 'conductor'), { recursive: true });
+    const db = new Database(':memory:');
+    migrate(db);
+    return { repo: createProjectRepository(db), dir };
+  })();
+}
+
+describe('project auto-activation on add', () => {
+  test('add rejects an existing project with a friendly already-added message', async () => {
+    const { repo, dir } = await makeFreshRepoAndDir('dup');
+    await expect(repo.add(dir)).resolves.toBeTruthy();
+    await expect(repo.add(dir)).rejects.toThrow(/already added/i);
+  });
+
+  test('first add becomes active when none is active', async () => {
+    const { repo, dir } = await makeFreshRepoAndDir('first');
+    const first = await repo.add(dir);
+    expect(repo.getActive()).toBe(first.id);
+  });
+
+  test('adding another while one is active does not change the active project', async () => {
+    const { repo, dir } = await makeFreshRepoAndDir('second');
+    const first = await repo.add(dir);
+    const other = await makeFreshRepoAndDir('other');
+    const second = await repo.add(other.dir);
+    expect(repo.getActive()).toBe(first.id);
+    expect(second.id).not.toBe(first.id);
   });
 });

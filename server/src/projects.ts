@@ -3,6 +3,15 @@ import { existsSync } from 'node:fs';
 import { stat } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
+/**
+ * Whether two (resolved) project paths refer to the same directory. Windows
+ * paths are case-insensitive, so comparison is done on a lowercased, resolved
+ * form while stored paths keep their original casing.
+ */
+export function sameProjectPath(a: string, b: string): boolean {
+  return resolve(a).toLowerCase() === resolve(b).toLowerCase();
+}
+
 export interface Project {
   id: number;
   path: string;
@@ -76,6 +85,19 @@ export function createProjectRepository(db: Database): ProjectRepository {
     return row?.value ?? null;
   }
 
+  function readActiveId(): number | null {
+    const value = getSettingValue(ACTIVE_KEY);
+    return value === null || value === '' ? null : Number(value);
+  }
+
+  function activate(id: number): void {
+    const existing = selectById.get(id) as ProjectRow | null | undefined;
+    if (existing === null || existing === undefined) {
+      throw new Error(`Project ${id} not found`);
+    }
+    setSetting(ACTIVE_KEY, String(id));
+  }
+
   return {
     list(): Project[] {
       const rows = selectAll.all() as ProjectRow[];
@@ -86,14 +108,26 @@ export function createProjectRepository(db: Database): ProjectRepository {
       if (!(await isValidProjectPath(path))) {
         throw new Error(`Not a git repo with a conductor/ directory: ${path}`);
       }
-      const result = insert.run(resolve(path));
+      const resolved = resolve(path);
+      const alreadyAdded = selectAll.all().some((row) =>
+        sameProjectPath((row as ProjectRow).path, resolved),
+      );
+      if (alreadyAdded) {
+        throw new Error(`Project already added: ${path}`);
+      }
+      const result = insert.run(resolved);
       const row = selectById.get(Number(result.lastInsertRowid)) as
         | ProjectRow
         | undefined;
       if (row === undefined) {
         throw new Error('Failed to add project');
       }
-      return toProject(row);
+      const project = toProject(row);
+      // Auto-activate the first project so the board renders without a click.
+      if (readActiveId() === null) {
+        activate(project.id);
+      }
+      return project;
     },
 
     remove(id: number): boolean {
@@ -106,16 +140,11 @@ export function createProjectRepository(db: Database): ProjectRepository {
     },
 
     setActive(id: number): void {
-      const existing = selectById.get(id) as ProjectRow | null | undefined;
-      if (existing === null || existing === undefined) {
-        throw new Error(`Project ${id} not found`);
-      }
-      setSetting(ACTIVE_KEY, String(id));
+      activate(id);
     },
 
     getActive(): number | null {
-      const value = getSettingValue(ACTIVE_KEY);
-      return value === null || value === '' ? null : Number(value);
+      return readActiveId();
     },
   };
 }
