@@ -15,19 +15,19 @@
 - [x] Task: Wire dev scripts (`bun run dev` boots server + web together) `c33c76a`
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `c33c76a`
 
-### Phase 2 — Persistence & Project Management
+### Phase 2 — Persistence & Project Management `[checkpoint: 1f2e2d1]`
 
-- [ ] Task: Define SQLite schema (`projects`, `settings`, `schema_version` via `PRAGMA user_version`)
-  - [ ] Write tests for schema initialization / migration
-- [ ] Task: Implement project repository (add / list / remove / setActive)
-  - [ ] Write tests for add validation (must be a git repo with `conductor/`)
-  - [ ] Write tests for CRUD behavior
-  - [ ] Implement the repository
-- [ ] Task: Implement `/api/projects` endpoints
-  - [ ] Write endpoint tests
-  - [ ] Implement endpoints
-- [ ] Task: Build frontend project picker + add form + switch
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Define SQLite schema (`projects`, `settings`, `schema_version` via `PRAGMA user_version`) `5e6fc86`
+  - [x] Write tests for schema initialization / migration `5e6fc86`
+- [x] Task: Implement project repository (add / list / remove / setActive) `8cba505`
+  - [x] Write tests for add validation (must be a git repo with `conductor/`) `8cba505`
+  - [x] Write tests for CRUD behavior `8cba505`
+  - [x] Implement the repository `8cba505`
+- [x] Task: Implement `/api/projects` endpoints `ca2c1dc`
+  - [x] Write endpoint tests `ca2c1dc`
+  - [x] Implement endpoints `ca2c1dc`
+- [x] Task: Build frontend project picker + add form + switch `1f2e2d1`
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `1f2e2d1`
 
 ### Phase 3 — Worktree Discovery & Phase Detection *(core logic)*
 
