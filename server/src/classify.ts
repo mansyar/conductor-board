@@ -7,7 +7,10 @@ export type TrackPhase = 'spec-plan' | 'implement' | 'review' | 'complete';
  * A track that has been archived (moved under conductor/archive/) is always
  * Complete; otherwise the phase follows the checkbox state.
  */
-export function classifyPhase(state: CheckboxState, archived: boolean): TrackPhase {
+export function classifyPhase(
+  state: CheckboxState,
+  archived: boolean,
+): TrackPhase {
   if (archived) {
     return 'complete';
   }

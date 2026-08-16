@@ -15,7 +15,10 @@ const LINE_PATTERN = /^\s*-\s*\[([ ~x])\]\s*\*\*Track:\s*(.+?)\*\*/;
 const LINK_PATTERN = /\[[^\]]*\]\(([^)]+)\)/;
 
 function trackIdFromLink(link: string): string {
-  const segments = link.replace(/\\/g, '/').split('/').filter((s) => s !== '');
+  const segments = link
+    .replace(/\\/g, '/')
+    .split('/')
+    .filter((s) => s !== '');
   return segments.length >= 2 ? segments[segments.length - 2] : '';
 }
 
