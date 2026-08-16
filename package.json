@@ -1,0 +1,21 @@
+{
+  "name": "conductor-board",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,web -c blue,green \"bun run --filter @conductor-board/server dev\" \"bun run --filter @conductor-board/web dev\"",
+    "dev:server": "bun run --filter @conductor-board/server dev",
+    "dev:web": "bun run --filter @conductor-board/web dev",
+    "build": "bun run --filter @conductor-board/web build",
+    "check": "biome check .",
+    "typecheck": "bun run --filter @conductor-board/server typecheck && bun run --filter @conductor-board/web typecheck"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.8",
+    "concurrently": "^10.0.5"
+  }
+}
