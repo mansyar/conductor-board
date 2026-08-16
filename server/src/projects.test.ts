@@ -148,18 +148,16 @@ describe('sameProjectPath', () => {
 
 // Each test uses a fresh repository and directory so auto-activation state is
 // never coupled between cases.
-function makeFreshRepoAndDir(name: string): Promise<{
+async function makeFreshRepoAndDir(name: string): Promise<{
   repo: ProjectRepository;
   dir: string;
 }> {
   const dir = join(root, `auto-${name}`);
-  return (async () => {
-    await mkdir(join(dir, '.git'), { recursive: true });
-    await mkdir(join(dir, 'conductor'), { recursive: true });
-    const db = new Database(':memory:');
-    migrate(db);
-    return { repo: createProjectRepository(db), dir };
-  })();
+  await mkdir(join(dir, '.git'), { recursive: true });
+  await mkdir(join(dir, 'conductor'), { recursive: true });
+  const db = new Database(':memory:');
+  migrate(db);
+  return { repo: createProjectRepository(db), dir };
 }
 
 describe('project auto-activation on add', () => {
