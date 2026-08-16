@@ -12,6 +12,12 @@
 ## Backend
 
 - **ElysiaJS** — type-safe HTTP framework serving the JSON API and static frontend.
+- **Static frontend serving** (added 2026-08-17) — the server serves the compiled SPA from
+  `web/dist` via `@elysiajs/static`, with a catch-all serving `index.html` for non-`/api`
+  GETs (SPA fallback). Static serving is enabled at runtime only when `web/dist/index.html`
+  exists, so the `bun run dev` loop (Vite + `/api` proxy) is unaffected. The root
+  `bun run serve` script builds the web app then starts the server, serving the whole board
+  on `:3001`.
 - **bun:sqlite** — built-in SQLite driver for persistence (projects + settings).
 - **Live board updates via Server-Sent Events** (added 2026-08-17) — `GET /api/events`
   streams `board-changed` events over SSE. A recursive `fs.watch` monitors the active
