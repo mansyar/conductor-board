@@ -1,15 +1,12 @@
-import { beforeEach, describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'bun:test';
 import { JSDOM } from 'jsdom';
 
-let renderMarkdown: (source: string) => string;
+// A DOM must exist before renderMarkdown loads so DOMPurify can bind to it.
+const dom = new JSDOM('');
+globalThis.window = dom.window as unknown as Window & typeof globalThis;
+globalThis.document = dom.window.document as Document;
 
-beforeEach(async () => {
-  // Provide a DOM before the module is loaded so createDOMPurify(window) works.
-  const dom = new JSDOM('');
-  globalThis.window = dom.window as unknown as Window & typeof globalThis;
-  globalThis.document = dom.window.document as Document;
-  ({ renderMarkdown } = await import('./renderMarkdown'));
-});
+const { renderMarkdown } = await import('./renderMarkdown');
 
 describe('renderMarkdown', () => {
   test('renders markdown to HTML', () => {
