@@ -4,11 +4,11 @@ Track: `markdown-render_20260817`
 
 ## Phase 1 — Land pending cleanup
 
-- [ ] Task: Verify the workspace baseline (run `bun test`; expect green).
-- [ ] Task: Diff-review the pending edits in `server/src/app.ts` (Biome format fix) and `server/src/appOpenZed.test.ts` (fixture refactor) to confirm they are behavior-neutral.
-- [ ] Task: Commit the cleanup with a conventional message, e.g. `style(server): normalize worktree resolution formatting` / `refactor(test): hoist worktree fixture init` (single commit is acceptable; keep message descriptive).
-- [ ] Task: Attach a git note summarizing the cleanup to the commit.
-- [ ] Task: Record the 7-char commit SHA here and mark this task complete.
+- [x] Task: Verify the workspace baseline (run `bun test`; expect green).
+- [x] Task: Diff-review the pending edits in `server/src/app.ts` (Biome format fix) and `server/src/appOpenZed.test.ts` (fixture refactor) to confirm they are behavior-neutral.
+- [x] Task: Commit the cleanup with a conventional message, e.g. `style(server): normalize worktree resolution formatting` / `refactor(test): hoist worktree fixture init` (single commit is acceptable; keep message descriptive).
+- [x] Task: Attach a git note summarizing the cleanup to the commit.
+- [x] Task: Record the 7-char commit SHA here and mark this task complete.
 
 ## Phase 2 — Document stack change (before implementation)
 
@@ -36,4 +36,4 @@ Track: `markdown-render_20260817`
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md) — propose manual verification (open a spec/plan, confirm rendering + highlighting + sanitized script) and await explicit approval.
 - [ ] Task: Mark track complete in registry and commit the plan/index updates.
 
-_Placeholder for Phase 1 commit SHA: `________`_
+_Phase 1 commit: `d3fa97d`_
