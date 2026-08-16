@@ -62,3 +62,7 @@
 - [x] Task: Refresh on tab focus + manual button `92f5890`
 - [x] Task: Error/empty/"not initialized" states + styling per product-guidelines `92f5890`
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `92f5890`
+
+## Phase: Review Fixes
+
+- [x] Task: Apply review suggestions `34e9ad6`
