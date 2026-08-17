@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { createApp } from './app';
 import { openDatabase } from './db';
 
-const port = Number(process.env.PORT ?? 3001);
+const port = Number(process.env.PORT ?? 3002);
 const dataDir = join(import.meta.dir, '..', 'data');
 mkdirSync(dataDir, { recursive: true });
 

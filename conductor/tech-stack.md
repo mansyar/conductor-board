@@ -16,7 +16,10 @@
   `web/dist`, with a catch-all serving `index.html` for non-`/api` GETs (SPA fallback). Static
   serving is enabled at runtime only when `web/dist/index.html` exists, so the `bun run dev`
   loop (Vite + `/api` proxy) is unaffected. The root `bun run serve` script builds the web app
-  then starts the server, serving the whole board on `:3001`.
+  then starts the server, serving the whole board on `:3002`.
+- **Default port deviation note** (2026-08-17) — the default serve/dev port moved from `3001`
+  to `3002` (in `server/src/index.ts` and the Vite `/api` proxy in `web/vite.config.ts`) so port
+  `3001` is free for the user's e2e tests. The server still honors a `PORT` env-var override.
 - **Static-serving deviation note** (2026-08-17) — the original plan specified serving via the
   `@elysiajs/static` plugin. During review it was dropped: Elysia's route precedence let the
   `get('*')` catch-all win, so the plugin never served a request (dead dependency). Serving is
