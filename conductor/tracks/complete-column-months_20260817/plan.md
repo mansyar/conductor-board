@@ -17,9 +17,9 @@
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 3 — Preferences endpoints
-- [ ] Task: **Red** — add app tests: `GET /api/preferences` returns 409 without an
+- [x] Task: **Red** — add app tests: `GET /api/preferences` returns 409 without an
       active project and the stored expanded months otherwise; `PUT
-      /api/preferences` persists and echoes them.
+      /api/preferences` persists and echoes them. (54e85b8)
 - [ ] Task: **Green** — wire the endpoints into `server/src/app.ts`.
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
