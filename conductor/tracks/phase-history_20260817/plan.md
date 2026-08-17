@@ -41,7 +41,7 @@
       `GET /api/history`. (7d2d9c0)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
-## Phase 4 — Progress trend in the UI
+## Phase 4 — Progress trend in the UI [checkpoint: be8320b]
 - [x] Task: **Red** — add `web/src/sparkline.test.ts` and `web/src/trend.test.ts`:
       `sparklinePoints` maps a values array to an SVG polyline string within a
       given width/height (handles flat and empty series); `trendDelta` returns the
