@@ -1,11 +1,11 @@
 # Plan — Detached-HEAD + card polish + default port 3002
 
-## Phase 1 — Default port 3002
-- [ ] Task: change the default port in `server/src/index.ts` to `process.env.PORT ?? 3002`.
-- [ ] Task: update the `/api` proxy target in `web/vite.config.ts` to `http://localhost:3002`.
-- [ ] Task: document the deviation in `conductor/tech-stack.md` (3001 → 3002, dated note).
-- [ ] Task: manually verify `bun run dev:server` binds 3002 and the Vite proxy reaches it.
-- [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
+## Phase 1 — Default port 3002 [checkpoint: 3ef8cbb]
+- [x] Task: change the default port in `server/src/index.ts` to `process.env.PORT ?? 3002`.
+- [x] Task: update the `/api` proxy target in `web/vite.config.ts` to `http://localhost:3002`.
+- [x] Task: document the deviation in `conductor/tech-stack.md` (3001 → 3002, dated note).
+- [x] Task: manually verify `bun run dev:server` binds 3002 and the Vite proxy reaches it.
+- [x] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 2 — Detached-HEAD short SHA
 - [ ] Task: **Red** — extend `server/src/worktrees.test.ts` so porcelain parsing
