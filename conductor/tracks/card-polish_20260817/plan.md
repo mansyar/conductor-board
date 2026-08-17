@@ -34,10 +34,11 @@
 - [x] Task: **Red** — extend `server/src/boardService.test.ts`: a track card's
       `lastModifiedMs` equals the newest mtime across its spec/plan/metadata;
       a missing dir yields `null`. Confirm it fails.
-- [~] Task: **Green** — add `readMtimeMs(worktreePath, relPath): Promise<number | null>`
+- [x] Task: **Green** — add `readMtimeMs(worktreePath, relPath): Promise<number | null>`
       to `ProjectReads` and `fsProjectReads` (and update fakes in affected test
       files); `loadBoard` computes the max and `board.ts` embeds it on cards.
-- [ ] Task: **Red** — add a `web/src` test for a `relativeTime(ms)` formatter
+      (91d0efb)
+- [~] Task: **Red** — add a `web/src` test for a `relativeTime(ms)` formatter
       (`just now`, `2h ago`, `3d ago`). Confirm it fails.
 - [ ] Task: **Green** — implement `relativeTime` and render it on cards (omitted
       when `null`, including idle / not-initialized).
