@@ -2,4 +2,5 @@
 
 ## Active
 
-_No active tracks._
+- [ ] **Track: Card search & filter**
+    *Link: [card-search-filter_20260817](./tracks/card-search-filter_20260817/index.md)*
