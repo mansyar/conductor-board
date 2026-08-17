@@ -40,3 +40,19 @@ export interface Board {
   idle: TrackCard[];
   progress: Progress;
 }
+
+export interface HistorySnapshot {
+  observedAt: string;
+  done: number;
+  total: number;
+  pct: number;
+  specPlan: number;
+  implement: number;
+  review: number;
+  complete: number;
+}
+
+export interface HistoryResponse {
+  projectId: number;
+  snapshots: HistorySnapshot[];
+}
