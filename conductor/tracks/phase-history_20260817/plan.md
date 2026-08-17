@@ -36,9 +36,9 @@
       state; an unchanged reload records none; `GET /api/history` returns the
       ascending snapshot list and the 409/404 contract matches `/api/board`.
       Confirm it fails. (37d5027)
-- [ ] Task: **Green** — wire the repository into `createApp`; record a
+- [x] Task: **Green** — wire the repository into `createApp`; record a
       deduplicated snapshot after `loadBoard` in the `/api/board` handler; add
-      `GET /api/history`.
+      `GET /api/history`. (7d2d9c0)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 4 — Progress trend in the UI
