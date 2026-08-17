@@ -54,6 +54,7 @@ function setup(reads: ProjectReads) {
   const app = createApp(db, { reads });
   return {
     app,
+    db,
     async addProject() {
       const res = await app.handle(
         new Request('http://localhost/api/projects', {
@@ -116,5 +117,65 @@ describe('GET /api/board', () => {
     expect(card.progress).toEqual({ done: 1, total: 2, pct: 50 });
     expect(board.idle).toHaveLength(0);
     expect(board.progress).toEqual({ done: 1, total: 2, pct: 50 });
+  });
+});
+
+function snapshotCount(db: Database): number {
+  const row = db.query('SELECT COUNT(*) AS c FROM snapshots').get() as {
+    c: number;
+  };
+  return row.c;
+}
+
+describe('snapshot recording and /api/history', () => {
+  test('records one snapshot per distinct board state', async () => {
+    const files: Record<string, string> = {
+      '/w/main/conductor/tracks.md':
+        '- [ ] **Track: A** *Link: [a_1/index.md](./tracks/a_1/index.md)*',
+      '/w/main/conductor/tracks/a_1/plan.md': '- [x] Task: One',
+    };
+    const { app, addProject, db } = setup(fakeReads(files));
+    await addProject();
+
+    await app.handle(new Request('http://localhost/api/board'));
+    await app.handle(new Request('http://localhost/api/board'));
+    expect(snapshotCount(db)).toBe(1);
+
+    files['/w/main/conductor/tracks/a_1/plan.md'] =
+      '- [x] Task: One\n- [x] Task: Two';
+    await app.handle(new Request('http://localhost/api/board'));
+    expect(snapshotCount(db)).toBe(2);
+  });
+
+  test('returns 409 for /api/history before a project is active', async () => {
+    const { app } = setup(fakeReads());
+    const res = await app.handle(new Request('http://localhost/api/history'));
+    expect(res.status).toBe(409);
+  });
+
+  test('returns ascending snapshots for the active project', async () => {
+    const files: Record<string, string> = {
+      '/w/main/conductor/tracks.md':
+        '- [ ] **Track: A** *Link: [a_1/index.md](./tracks/a_1/index.md)*',
+      '/w/main/conductor/tracks/a_1/plan.md': '- [x] Task: One',
+    };
+    const { app, addProject } = setup(fakeReads(files));
+    await addProject();
+
+    await app.handle(new Request('http://localhost/api/board'));
+    files['/w/main/conductor/tracks/a_1/plan.md'] =
+      '- [x] Task: One\n- [x] Task: Two';
+    await app.handle(new Request('http://localhost/api/board'));
+
+    const res = await app.handle(new Request('http://localhost/api/history'));
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      projectId: number;
+      snapshots: Array<{ done: number; total: number; specPlan: number }>;
+    };
+    expect(body.projectId).toBeGreaterThan(0);
+    expect(body.snapshots.map((snapshot) => snapshot.done)).toEqual([1, 2]);
+    expect(body.snapshots.map((snapshot) => snapshot.total)).toEqual([1, 2]);
+    expect(body.snapshots.map((snapshot) => snapshot.specPlan)).toEqual([1, 1]);
   });
 });
