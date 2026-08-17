@@ -1,7 +1,6 @@
 import type { Database } from 'bun:sqlite';
 import { existsSync, watch } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
-import { staticPlugin } from '@elysiajs/static';
 import { Elysia, t } from 'elysia';
 import { loadBoard, type ProjectReads } from './boardService';
 import { isRealPathWithin, resolveWithin } from './fileAccess';
@@ -60,7 +59,7 @@ export function createApp(
   // (Vite + `/api` proxy) is unaffected during development.
   const distDir =
     deps?.static?.distDir ?? join(import.meta.dir, '..', '..', 'web', 'dist');
-  const { enabled, indexHtml } = staticServeConfig(distDir);
+  const { indexHtml } = staticServeConfig(distDir);
 
   /** Point the live service at whatever project is currently active. */
   function syncActiveProject(): void {
@@ -242,13 +241,8 @@ export function createApp(
       });
     });
 
-  if (enabled) {
-    app.use(staticPlugin({ assets: distDir, prefix: '/' }));
-  }
-
   // SPA history fallback for non-/api GET misses. Matched routes (incl. `/api/*`)
-  // win first; an existing file in the dist root is served directly (so assets
-  // resolve even when the static plugin doesn't set a content type), otherwise
+  // win first; an existing file in the dist root is served directly, otherwise
   // index.html is returned (`200`) to support future client-side routes. An
   // unknown `/api/*` path returns 404 (JSON) rather than HTML.
   app.get('*', ({ path, set }) => {
@@ -260,7 +254,12 @@ export function createApp(
       set.status = 404;
       return 'Not found';
     }
-    const rel = decodeURIComponent(path.replace(/^\/+/, '').split('?')[0]);
+    let rel: string;
+    try {
+      rel = decodeURIComponent(path.replace(/^\/+/, '').split('?')[0]);
+    } catch {
+      rel = '';
+    }
     const target = rel === '' ? null : resolveWithin(distDir, rel);
     if (target !== null && existsSync(target)) {
       return new Response(Bun.file(target));
