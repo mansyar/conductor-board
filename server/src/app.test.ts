@@ -159,6 +159,40 @@ describe('DELETE /api/projects/:id', () => {
   });
 });
 
+describe('GET/PUT /api/preferences', () => {
+  test('GET returns 409 before a project is active', async () => {
+    const { get } = setup();
+    const res = await get('/api/preferences');
+    expect(res.status).toBe(409);
+  });
+
+  test('GET returns an empty list when no preference is stored', async () => {
+    const { post, getJson } = setup();
+    await post('/api/projects', { path: validPath });
+    const body = (await getJson('/api/preferences')) as {
+      expandedMonths: string[];
+    };
+    expect(body.expandedMonths).toEqual([]);
+  });
+
+  test('PUT persists and GET returns the expanded months', async () => {
+    const { post, getJson, app } = setup();
+    await post('/api/projects', { path: validPath });
+    const putRes = await app.handle(
+      new Request('http://localhost/api/preferences', {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ expandedMonths: ['2026-08', '2026-07'] }),
+      }),
+    );
+    expect(putRes.status).toBe(200);
+    const body = (await getJson('/api/preferences')) as {
+      expandedMonths: string[];
+    };
+    expect(body.expandedMonths).toEqual(['2026-08', '2026-07']);
+  });
+});
+
 describe('PUT /api/projects/:id/active', () => {
   test('sets the active project', async () => {
     const { post, put, getJson } = setup();
