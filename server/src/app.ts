@@ -21,6 +21,7 @@ import {
   type WatchHandle,
 } from './liveUpdates';
 import { createZedRunner, type ZedRunner } from './openZed';
+import { createPreferencesRepository } from './preferences';
 import { createProjectRepository } from './projects';
 import { staticServeConfig } from './staticServe';
 
@@ -79,6 +80,7 @@ export function createApp(
 ) {
   const projects = createProjectRepository(db);
   const snapshots = createSnapshotRepository(db);
+  const preferences = createPreferencesRepository(db);
   const reads = deps?.reads ?? createFsProjectReads();
   const zed = deps?.zed ?? createZedRunner();
   const live =
@@ -207,6 +209,37 @@ export function createApp(
         })),
       };
     })
+    .get('/api/preferences', ({ set }) => {
+      const activeId = projects.getActive();
+      if (activeId === null) {
+        set.status = 409;
+        return { error: 'No active project selected' };
+      }
+      const project = projects.list().find((p) => p.id === activeId);
+      if (project === undefined) {
+        set.status = 404;
+        return { error: 'Active project not found' };
+      }
+      return { expandedMonths: preferences.getExpandedMonths(activeId) };
+    })
+    .put(
+      '/api/preferences',
+      ({ body, set }) => {
+        const activeId = projects.getActive();
+        if (activeId === null) {
+          set.status = 409;
+          return { error: 'No active project selected' };
+        }
+        const project = projects.list().find((p) => p.id === activeId);
+        if (project === undefined) {
+          set.status = 404;
+          return { error: 'Active project not found' };
+        }
+        preferences.setExpandedMonths(activeId, body.expandedMonths);
+        return { expandedMonths: body.expandedMonths };
+      },
+      { body: t.Object({ expandedMonths: t.Array(t.String()) }) },
+    )
     .post(
       '/api/open-zed',
       async ({ body, set }) => {
