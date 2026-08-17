@@ -20,4 +20,5 @@
 - [x] Task: Add `filter` state and apply `filterCards` to column and idle cards on each render
 - [x] Task: Show "No matches" in affected columns when the filter is active and a column has no matching cards
 - [x] Task: Clearing the input restores the full board
-- [~] Task: Phase Verification & Checkpoint (refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (refer to workflow.md)
+  - [checkpoint: 828d54c]
