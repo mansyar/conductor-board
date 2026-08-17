@@ -24,7 +24,7 @@
       collision-safe for the small summary shape.
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
-## Phase 3 — Snapshot persistence, recording, and endpoint
+## Phase 3 — Snapshot persistence, recording, and endpoint [checkpoint: 7d2d9c0]
 - [x] Task: **Red** — add `server/src/historyRepository.test.ts`: the repository
       inserts a snapshot, returns the latest `state_hash` (null when empty), and
       lists recent snapshots ascending by `observed_at` capped by a limit. Confirm
