@@ -25,7 +25,10 @@ export interface ProjectReads {
    * Modification time (epoch ms) of a file relative to a worktree, or null when
    * the file does not exist or its mtime cannot be read.
    */
-  readMtimeMs(worktreePath: string, relativePath: string): Promise<number | null>;
+  readMtimeMs(
+    worktreePath: string,
+    relativePath: string,
+  ): Promise<number | null>;
 }
 
 async function readOptional(

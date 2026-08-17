@@ -12,6 +12,7 @@ function card(overrides: Partial<TrackCard> = {}): TrackCard {
     trackName: 'Alpha feature',
     columnId: 'implement',
     progress: { done: 2, total: 4, pct: 50 },
+    lastModifiedMs: null,
     ...overrides,
   };
 }

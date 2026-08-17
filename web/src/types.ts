@@ -27,6 +27,8 @@ export interface TrackCard {
   trackName: string | null;
   columnId: ColumnId | null;
   progress: Progress;
+  /** Newest mtime (epoch ms) across the track's own conductor files, if any. */
+  lastModifiedMs: number | null;
   /** True when this card represents an archived track. */
   archived?: boolean;
   notInitialized?: boolean;

@@ -4,6 +4,7 @@ import { branchLabel } from './branchLabel';
 import { filterCards } from './filterCards';
 import { subscribeLive } from './liveSubscribe';
 import { openZed } from './openZed';
+import { relativeTime } from './relativeTime';
 import { renderMarkdown } from './renderMarkdown';
 import { trackDocPath } from './trackDocPath';
 import type { Board as BoardModel, TrackCard } from './types';
@@ -139,6 +140,11 @@ function TrackCardView({ card, onOpen, onCopy, onOpenZed }: CardProps) {
         <p className="mt-1 text-xs text-amber-400">Not initialized</p>
       )}
       <p className="mt-1 truncate text-xs text-zinc-500">{card.worktreePath}</p>
+      {card.lastModifiedMs !== null && (
+        <p className="mt-0.5 text-xs text-zinc-600">
+          Modified {relativeTime(card.lastModifiedMs)}
+        </p>
+      )}
       {card.progress.total > 0 && (
         <div className="mt-2">
           <div className="h-1.5 w-full overflow-hidden rounded bg-zinc-800">
