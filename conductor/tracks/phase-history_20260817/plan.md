@@ -48,7 +48,7 @@
       first-to-last percentage-point change and its direction. Confirm they fail. (89e6a25)
 - [x] Task: **Green** — implement `sparkline.ts` and `trend.ts`; add a
       `HistorySnapshot` type and a `fetchHistory` helper. (73a4cb0)
-- [ ] Task: render the sparkline + trend caption in `web/src/Board.tsx` next to the
+- [x] Task: render the sparkline + trend caption in `web/src/Board.tsx` next to the
       progress summary, hidden below two snapshots (JSX layout is exempt from the
-      mandatory-testing scope).
+      mandatory-testing scope). (be8320b)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
