@@ -29,13 +29,16 @@
 
 ## Phase 3 — Root `serve` script & final gates
 
-- [ ] Task: Add `serve` script to the root `package.json`
-      (`bun run build && bun run --filter @conductor-board/server start`)
-  - [ ] Manual check: `bun run serve` builds the web app and serves the board at
+- [x] Task: Add `serve` script to the root `package.json`
+      (`bun run build && bun run --filter @conductor-board/server start`) [commit: 982314a]
+  - [x] Manual check: `bun run serve` builds the web app and serves the board at
         `http://localhost:3001`
-- [ ] Task: Run full quality gates (`bun run typecheck`, `biome check .`, `bun test`,
+- [x] Task: Run full quality gates (`bun run typecheck`, `biome check .`, `bun test`,
       coverage >80%)
-- [ ] Task: Commit with a descriptive message and attach a git-note summary
-- [ ] Task: Record the task commit SHA in this plan `[commit: <sha>]`
-- [ ] Task: Commit the plan update
+- [x] Task: Commit with a descriptive message and attach a git-note summary [commit: 982314a]
+- [x] Task: Record the task commit SHA in this plan `[commit: 982314a]`
+- [x] Task: Commit the plan update
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
+## Phase: Review Fixes
+- [ ] Task: (reserved for conductor-review corrections)
