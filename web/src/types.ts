@@ -21,6 +21,8 @@ export interface TrackCard {
   worktreePath: string;
   branch: string | null;
   detached: boolean;
+  /** HEAD commit sha of the worktree (populated for detached HEAD display). */
+  headSha: string | null;
   trackId: string | null;
   trackName: string | null;
   columnId: ColumnId | null;

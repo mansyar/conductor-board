@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { COLUMN_CONFIG, COLUMN_ORDER } from './boardColumns';
+import { branchLabel } from './branchLabel';
 import { filterCards } from './filterCards';
 import { subscribeLive } from './liveSubscribe';
 import { openZed } from './openZed';
@@ -119,7 +120,7 @@ interface CardProps {
 function TrackCardView({ card, onOpen, onCopy, onOpenZed }: CardProps) {
   const columnColor =
     card.columnId === null ? '' : COLUMN_CONFIG[card.columnId].bar;
-  const branch = card.detached ? 'detached' : card.branch;
+  const branch = branchLabel(card.branch, card.detached, card.headSha);
 
   return (
     <div className="rounded-md border border-zinc-800 bg-zinc-900/70 p-3">
@@ -134,7 +135,7 @@ function TrackCardView({ card, onOpen, onCopy, onOpenZed }: CardProps) {
       )}
       <p className="mt-1 truncate text-xs text-zinc-400">
         {card.worktreePath}
-        {branch !== null && ` · ${branch}`}
+        {branch !== '' && ` · ${branch}`}
       </p>
       {card.progress.total > 0 && (
         <div className="mt-2">

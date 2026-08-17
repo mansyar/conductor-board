@@ -39,8 +39,13 @@ function fakeReads(options: FakeOptions = {}): ProjectReads {
   return {
     async listWorktrees(): Promise<WorktreeInfo[]> {
       return [
-        { path: '/w/main', branch: 'main', detached: false },
-        { path: '/w/feature-a', branch: 'feature-a', detached: false },
+        { path: '/w/main', branch: 'main', detached: false, headSha: null },
+        {
+          path: '/w/feature-a',
+          branch: 'feature-a',
+          detached: false,
+          headSha: null,
+        },
       ];
     },
     async listArchiveDirs(worktreePath: string): Promise<string[]> {

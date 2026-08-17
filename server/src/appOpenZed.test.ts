@@ -16,6 +16,7 @@ interface WorktreeFixture {
   path: string;
   branch: string;
   detached: boolean;
+  headSha: string | null;
 }
 
 let mainWorktree: WorktreeFixture;
@@ -27,8 +28,18 @@ beforeAll(async () => {
   await mkdir(join(validPath, '.git'), { recursive: true });
   await mkdir(join(validPath, 'conductor'), { recursive: true });
   libPath = join(root, 'lib');
-  mainWorktree = { path: validPath, branch: 'main', detached: false };
-  libWorktree = { path: libPath, branch: 'lib', detached: false };
+  mainWorktree = {
+    path: validPath,
+    branch: 'main',
+    detached: false,
+    headSha: null,
+  };
+  libWorktree = {
+    path: libPath,
+    branch: 'lib',
+    detached: false,
+    headSha: null,
+  };
 });
 
 afterAll(async () => {

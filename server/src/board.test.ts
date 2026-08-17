@@ -18,7 +18,7 @@ function worktree(
   path: string,
   overrides: Partial<WorktreeInfo> = {},
 ): WorktreeInfo {
-  return { path, branch: 'main', detached: false, ...overrides };
+  return { path, branch: 'main', detached: false, headSha: null, ...overrides };
 }
 
 function source(

@@ -15,6 +15,8 @@ export interface TrackCard {
   worktreePath: string;
   branch: string | null;
   detached: boolean;
+  /** HEAD commit sha of the worktree (population for detached HEAD display). */
+  headSha: string | null;
   trackId: string | null;
   trackName: string | null;
   /** Lifecycle column the card belongs to, or null when in the idle lane. */
@@ -90,6 +92,7 @@ function idleCard(worktree: WorktreeInfo, notInitialized = false): TrackCard {
     worktreePath: worktree.path,
     branch: worktree.branch,
     detached: worktree.detached,
+    headSha: worktree.headSha,
     trackId: null,
     trackName: null,
     columnId: null,
@@ -119,6 +122,7 @@ export function composeBoard(groups: WorktreeGroup[]): Board {
         worktreePath: group.worktree.path,
         branch: group.worktree.branch,
         detached: group.worktree.detached,
+        headSha: group.worktree.headSha,
         trackId: track.entry.id,
         trackName: track.entry.description,
         columnId,

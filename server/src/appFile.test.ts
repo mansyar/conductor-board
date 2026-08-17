@@ -25,7 +25,9 @@ function fakeReads(files: Record<string, string> = {}): ProjectReads {
   const map = new Map(Object.entries(files));
   return {
     async listWorktrees() {
-      return [{ path: '/w/main', branch: 'main', detached: false }];
+      return [
+        { path: '/w/main', branch: 'main', detached: false, headSha: null },
+      ];
     },
     async readTextFile(worktreePath: string, relativePath: string) {
       const key = `${worktreePath}/${relativePath.replace(/\\/g, '/')}`;

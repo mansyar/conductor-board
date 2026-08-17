@@ -3,11 +3,13 @@ export interface WorktreeInfo {
   /** Short branch name (refs/heads/ stripped), or null when detached. */
   branch: string | null;
   detached: boolean;
+  /** The HEAD commit sha for this worktree (useful for detached HEADs), or null. */
+  headSha: string | null;
 }
 
 /**
  * Parses the output of `git worktree list --porcelain` into worktree records.
- * Handles `branch`, `detached`, and ignores unknown lines (bare, locked, ...).
+ * Handles `branch`, `detached`, `HEAD`, and ignores unknown lines (bare, locked, ...).
  */
 export function parseWorktreePorcelain(output: string): WorktreeInfo[] {
   const worktrees: WorktreeInfo[] = [];
@@ -21,6 +23,7 @@ export function parseWorktreePorcelain(output: string): WorktreeInfo[] {
     let path = '';
     let branch: string | null = null;
     let detached = false;
+    let headSha: string | null = null;
 
     for (const line of lines) {
       if (line.startsWith('worktree ')) {
@@ -30,11 +33,13 @@ export function parseWorktreePorcelain(output: string): WorktreeInfo[] {
         branch = ref.replace(/^refs\/heads\//, '');
       } else if (line === 'detached') {
         detached = true;
+      } else if (line.startsWith('HEAD ')) {
+        headSha = line.slice('HEAD '.length).trim() || null;
       }
     }
 
     if (path !== '') {
-      worktrees.push({ path, branch, detached });
+      worktrees.push({ path, branch, detached, headSha });
     }
   }
 

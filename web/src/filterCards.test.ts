@@ -7,6 +7,7 @@ function card(overrides: Partial<TrackCard> = {}): TrackCard {
     worktreePath: '/repo/wt-alpha',
     branch: 'feature/alpha',
     detached: false,
+    headSha: null,
     trackId: 't-alpha_20260817',
     trackName: 'Alpha feature',
     columnId: 'implement',

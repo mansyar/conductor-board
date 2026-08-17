@@ -41,6 +41,7 @@ describe('parseWorktreePorcelain', () => {
       path: '/tmp/repo',
       branch: 'main',
       detached: false,
+      headSha: '1a2b3c4d5e6f',
     });
   });
 
@@ -62,6 +63,7 @@ describe('parseWorktreePorcelain', () => {
       path: '/tmp/repo-wt',
       branch: null,
       detached: true,
+      headSha: '4d5e6f7',
     });
   });
 
@@ -92,6 +94,7 @@ bare
       path: '/tmp/repo',
       branch: 'main',
       detached: false,
+      headSha: 'aaaa',
     });
   });
 });

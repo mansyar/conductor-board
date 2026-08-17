@@ -24,7 +24,9 @@ afterAll(async () => {
 function fakeReads(files: Record<string, string> = {}): ProjectReads {
   return {
     async listWorktrees() {
-      return [{ path: '/w/main', branch: 'main', detached: false }];
+      return [
+        { path: '/w/main', branch: 'main', detached: false, headSha: null },
+      ];
     },
     async readTextFile(worktreePath: string, relativePath: string) {
       const key = `${worktreePath}/${relativePath}`;
