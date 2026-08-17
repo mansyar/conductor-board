@@ -25,7 +25,9 @@
       detached label) as a distinct badge on its own line; demote the worktree
       path to a quiet subtitle. (JSX layout is exempt from the mandatory-testing
       scope.) (e8b0985)
-- [~] Task: visual sanity pass at narrow widths (XL 4-col → single column).
+- [x] Task: visual sanity pass at narrow widths (XL 4-col → single column).
+      Verified 390px (1 col), 900px (2 col), and XL (4 col) via Playwright;
+      badge truncates, path ellipsizes, no overflow.
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 4 — Last-modified (relative time)
