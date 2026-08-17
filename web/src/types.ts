@@ -56,3 +56,8 @@ export interface HistoryResponse {
   projectId: number;
   snapshots: HistorySnapshot[];
 }
+
+export interface PreferencesResponse {
+  /** Month bucket keys (YYYY-MM) the user has expanded in the Complete column. */
+  expandedMonths: string[];
+}
