@@ -2,23 +2,24 @@
 
 ## Phase 1 — Pure archived-track logic (TDD)
 
-- [ ] Task: Write failing unit tests for a new pure module `server/src/archiveTracks.ts`.
-  - [ ] `archivedTitle` returns the metadata.json `title` when it is a non-empty
+- [x] Task: Write failing unit tests for a new pure module `server/src/archiveTracks.ts`.
+  - [x] `archivedTitle` returns the metadata.json `title` when it is a non-empty
         string (e.g. `{ "id": "x", "title": "Serve built frontend" }` -> "Serve
         built frontend").
-  - [ ] `archivedTitle` falls back to the archive folder name when `title` is
+  - [x] `archivedTitle` falls back to the archive folder name when `title` is
         missing (e.g. board-mvp-style `{ "track_id": "...", "status": "complete" }`)
         or empty.
-  - [ ] `archivedTitle` falls back to the folder name for malformed / unparseable
+  - [x] `archivedTitle` falls back to the folder name for malformed / unparseable
         JSON.
-  - [ ] `dedupeArchived` keeps the first card of duplicate archived trackIds and
+  - [x] `dedupeArchived` keeps the first card of duplicate archived trackIds and
         drops later duplicates.
-  - [ ] `dedupeArchived` leaves non-archived (active) cards untouched, including
+  - [x] `dedupeArchived` leaves non-archived (active) cards untouched, including
         active cards that share an id across worktrees.
-  - [ ] `dedupeArchived` returns a new array and preserves order.
-- [ ] Task: Implement `server/src/archiveTracks.ts` to pass the tests.
-- [ ] Task: Refactor (optional) — keep implementation minimal.
-- [ ] Task: Phase Verification & Checkpoint (refer to workflow.md).
+  - [x] `dedupeArchived` returns a new array and preserves order.
+- [x] Task: Implement `server/src/archiveTracks.ts` to pass the tests.
+- [x] Task: Refactor (optional) — keep implementation minimal.
+- [x] Task: Phase Verification & Checkpoint (refer to workflow.md).
+  - [checkpoint: 8427c22]
 
 ## Phase 2 — Wire archive discovery into board assembly (server)
 
