@@ -1,6 +1,6 @@
 # Plan — Group the Complete column by month
 
-## Phase 1 — Month bucketing & labeling (pure)
+## Phase 1 — Month bucketing & labeling (pure) [checkpoint: ce70df1]
 - [x] Task: **Red** — add `web/src/completeMonths.test.ts`: `monthBucketKey`
       returns `YYYY-MM` for an epoch-ms and `unsorted` for null; `monthBucketLabel`
       formats a key as `Month YYYY` (and `Unsorted`); `groupCardsByMonth` buckets
