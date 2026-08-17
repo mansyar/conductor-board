@@ -51,4 +51,50 @@ describe('database schema', () => {
     };
     expect(count.c).toBe(0);
   });
+
+  test('migrate upgrades a v1 database to v2, preserving data', () => {
+    const db = new Database(':memory:');
+    // Simulate an existing v1 database with populated projects/settings.
+    db.exec(`
+      CREATE TABLE projects (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        path TEXT NOT NULL UNIQUE,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+      CREATE TABLE settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      );
+    `);
+    db.query('INSERT INTO projects (path) VALUES (?)').run('/tmp/kept');
+    db.query('INSERT INTO settings (key, value) VALUES (?, ?)').run('k', 'v');
+    db.exec('PRAGMA user_version = 1');
+
+    migrate(db);
+
+    const tables = db
+      .query("SELECT name FROM sqlite_master WHERE type = 'table'")
+      .all() as { name: string }[];
+    const names = tables.map((table) => table.name);
+    expect(names).toContain('snapshots');
+
+    const indexes = db
+      .query(
+        "SELECT name FROM sqlite_master WHERE type = 'index' AND tbl_name = 'snapshots'",
+      )
+      .all() as { name: string }[];
+    expect(indexes.map((index) => index.name)).toContain(
+      'idx_snapshots_project_time',
+    );
+
+    const projects = db.query('SELECT path FROM projects').all() as {
+      path: string;
+    }[];
+    expect(projects).toEqual([{ path: '/tmp/kept' }]);
+
+    const userVersion = db.query('PRAGMA user_version').get() as {
+      user_version: number;
+    };
+    expect(userVersion.user_version).toBe(SCHEMA_VERSION);
+  });
 });
