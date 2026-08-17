@@ -45,11 +45,12 @@
 
 ## Phase 3 — Frontend: open spec/plan from the archive path
 
-- [ ] Task: Add a pure path helper and use it in the board card actions.
-  - [ ] Add `web/src/trackDocPath.ts` returning
+- [x] Task: Add a pure path helper and use it in the board card actions.
+  - [x] Add `web/src/trackDocPath.ts` returning
         `conductor/{archive|tracks}/{trackId}/{kind}.md` based on an `archived`
         flag, with unit tests (`web/src/trackDocPath.test.ts`).
-  - [ ] Add `archived?: boolean` to the `TrackCard` type in `web/src/types.ts`.
-  - [ ] In `web/src/Board.tsx`, pass `archived` through the modal target and use
+  - [x] Add `archived?: boolean` to the `TrackCard` type in `web/src/types.ts`.
+  - [x] In `web/src/Board.tsx`, pass `archived` through the modal target and use
         `trackDocPath` in `FileModal` instead of the hardcoded tracks path.
-- [ ] Task: Phase Verification & Checkpoint (refer to workflow.md).
+- [x] Task: Phase Verification & Checkpoint (refer to workflow.md).
+  - [checkpoint: fb996d1]
