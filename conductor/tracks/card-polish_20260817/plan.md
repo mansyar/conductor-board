@@ -30,7 +30,7 @@
       badge truncates, path ellipsizes, no overflow.
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
-## Phase 4 — Last-modified (relative time)
+## Phase 4 — Last-modified (relative time) [checkpoint: 1444787]
 - [x] Task: **Red** — extend `server/src/boardService.test.ts`: a track card's
       `lastModifiedMs` equals the newest mtime across its spec/plan/metadata;
       a missing dir yields `null`. Confirm it fails.
