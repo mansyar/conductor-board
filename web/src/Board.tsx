@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { COLUMN_CONFIG, COLUMN_ORDER } from './boardColumns';
 import { branchLabel } from './branchLabel';
+import { groupCardsByMonth } from './completeMonths';
 import { filterCards } from './filterCards';
 import { fetchHistory } from './historyApi';
 import { subscribeLive } from './liveSubscribe';
 import { openZed } from './openZed';
+import { fetchPreferences, savePreferences } from './preferencesApi';
 import { relativeTime } from './relativeTime';
 import { renderMarkdown } from './renderMarkdown';
 import { sparklinePoints } from './sparkline';
@@ -207,6 +209,7 @@ export function Board({ activeId }: BoardProps) {
   const [modal, setModal] = useState<ModalTarget | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [filter, setFilter] = useState('');
+  const [expandedMonths, setExpandedMonths] = useState<Set<string>>(new Set());
   const toastTimer = useRef<number | null>(null);
 
   const loadHistory = useCallback(async () => {
@@ -271,6 +274,48 @@ export function Board({ activeId }: BoardProps) {
       void load();
     });
   }, [activeId, load]);
+
+  // Load the persisted expanded-month preference whenever the active project
+  // changes. Failures fall back to the default (all months collapsed).
+  useEffect(() => {
+    if (activeId === null) {
+      setExpandedMonths(new Set());
+      return;
+    }
+    let cancelled = false;
+    void fetchPreferences()
+      .then((prefs) => {
+        if (!cancelled) {
+          setExpandedMonths(new Set(prefs.expandedMonths));
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setExpandedMonths(new Set());
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeId]);
+
+  /** Toggles a month section and persists the new expanded set. */
+  function toggleMonth(key: string) {
+    setExpandedMonths((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      // A failed save keeps the local toggle; the preference simply resets
+      // on the next load, so the UI stays responsive.
+      void savePreferences([...next]).catch(() => {
+        // Ignore persistence failures.
+      });
+      return next;
+    });
+  }
 
   function showToast(message: string) {
     setToast(message);
@@ -411,6 +456,12 @@ export function Board({ activeId }: BoardProps) {
               : columnCards;
             const empty = cards.length === 0;
             const searchedAway = empty && columnCards.length > 0;
+            // The Complete column groups into collapsible month sections unless
+            // a filter is active (then a flat match list is clearer).
+            const completeGroups =
+              columnId === 'complete' && !filterActive
+                ? groupCardsByMonth(cards)
+                : null;
             return (
               <section key={columnId} className="space-y-2">
                 <header className="flex items-center gap-2">
@@ -423,7 +474,61 @@ export function Board({ activeId }: BoardProps) {
                   </span>
                 </header>
                 <div className="space-y-2">
-                  {empty ? (
+                  {completeGroups !== null ? (
+                    completeGroups.length === 0 ? (
+                      <p className="text-xs text-zinc-600">Empty</p>
+                    ) : (
+                      <div className="space-y-3">
+                        {completeGroups.map((group) => {
+                          const isExpanded = expandedMonths.has(group.key);
+                          return (
+                            <div key={group.key} className="space-y-2">
+                              <button
+                                type="button"
+                                onClick={() => toggleMonth(group.key)}
+                                aria-expanded={isExpanded}
+                                className="flex w-full items-center gap-2 rounded border border-zinc-800 bg-zinc-900/50 px-2 py-1.5 text-left hover:border-zinc-600"
+                              >
+                                <span className="text-xs text-zinc-500">
+                                  {isExpanded ? '▾' : '▸'}
+                                </span>
+                                <span className="text-sm font-medium text-zinc-200">
+                                  {group.label}
+                                </span>
+                                <span className="text-xs text-zinc-500">
+                                  {group.cards.length}
+                                </span>
+                              </button>
+                              {isExpanded && (
+                                <div className="space-y-2">
+                                  {group.cards.map((card) => (
+                                    <TrackCardView
+                                      key={`${card.worktreePath}-${card.trackId}`}
+                                      card={card}
+                                      onOpen={(kind) =>
+                                        setModal({
+                                          worktree: card.worktreePath,
+                                          trackId: card.trackId ?? '',
+                                          trackName:
+                                            card.trackName ??
+                                            card.trackId ??
+                                            '',
+                                          archived: card.archived ?? false,
+                                          kind,
+                                        })
+                                      }
+                                      onCopy={() => void copyPath(card)}
+                                      onOpenZed={() => void openInZed(card)}
+                                    />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )
+                  ) : empty ? (
                     <p className="text-xs text-zinc-600">
                       {searchedAway ? 'No matches' : 'Empty'}
                     </p>
