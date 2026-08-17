@@ -6,7 +6,7 @@
       formats a key as `Month YYYY` (and `Unsorted`); `groupCardsByMonth` buckets
       Complete cards by `lastModifiedMs`, newest month first, unsorted last.
       Confirm it fails. (e7ef072)
-- [ ] Task: **Green** — implement `completeMonths.ts`.
+- [x] Task: **Green** — implement `completeMonths.ts`. (ce70df1)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 2 — Preferences persistence
