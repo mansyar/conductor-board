@@ -11,7 +11,12 @@ export function filterCards(cards: TrackCard[], query: string): TrackCard[] {
     return cards;
   }
   return cards.filter((card) => {
-    const haystack = [card.trackName, card.trackId, card.worktreePath, card.branch]
+    const haystack = [
+      card.trackName,
+      card.trackId,
+      card.worktreePath,
+      card.branch,
+    ]
       .filter((v): v is string => v !== null)
       .join(' ')
       .toLowerCase();
