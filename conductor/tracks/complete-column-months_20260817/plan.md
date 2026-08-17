@@ -24,8 +24,8 @@
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 4 — Collapsible Complete column UI
-- [ ] Task: add a `fetchPreferences`/`savePreferences` helper + `PreferencesResponse`
-      type (thin fetch, exempt from mandatory tests).
-- [ ] Task: render month sections in `web/src/Board.tsx` with expand/collapse
-      (default collapsed) and persist toggles (JSX layout exempt).
+- [x] Task: add a `fetchPreferences`/`savePreferences` helper + `PreferencesResponse`
+      type (thin fetch, exempt from mandatory tests). (136bb18)
+- [x] Task: render month sections in `web/src/Board.tsx` with expand/collapse
+      (default collapsed) and persist toggles (JSX layout exempt). (9027680)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
