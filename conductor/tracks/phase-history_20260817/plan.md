@@ -12,7 +12,7 @@
       `(project_id, observed_at)` index. (f158d7a)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
-## Phase 2 — Board summary & change detection (pure logic)
+## Phase 2 — Board summary & change detection (pure logic) [checkpoint: 39b487d]
 - [x] Task: **Red** — add `server/src/history.test.ts`: `summarizeBoard` reduces a
       board to `{ done, total, specPlan, implement, review, complete }` (idle cards
       excluded); `computeStateHash` is deterministic and differs when any summary
