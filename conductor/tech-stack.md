@@ -30,6 +30,10 @@
   streams `board-changed` events over SSE. A recursive `fs.watch` monitors the active
   project's worktree `conductor/` directories (500ms debounced) and the SPA re-fetches
   `/api/board` on each event. Manual Refresh + window-focus refresh remain as fallbacks.
+- **Phase-history snapshots** (added 2026-08-17) — after each successful board load the
+  server records a deduplicated snapshot of aggregate progress and per-column counts into
+  the `snapshots` table (schema v2), and `GET /api/history` serves the recent window. The
+  SPA renders a progress sparkline + trend delta from it.
 
 ## Frontend
 
