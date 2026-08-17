@@ -2,15 +2,15 @@
 
 ## Phase 1 · Pure filter logic (TDD)
 
-- [ ] Task: Write failing unit tests for `filterCards` (`web/src/filterCards.test.ts`)
-  - [ ] matches track name (case-insensitive substring)
-  - [ ] matches track id
-  - [ ] matches worktree path
-  - [ ] matches branch
-  - [ ] whitespace-only query returns cards unchanged
-  - [ ] no match returns empty list
-- [ ] Task: Implement `filterCards` (`web/src/filterCards.ts`) to pass tests
-- [ ] Task: Refactor (optional)
+- [x] Task: Write failing unit tests for `filterCards` (`web/src/filterCards.test.ts`)
+  - [x] matches track name (case-insensitive substring)
+  - [x] matches track id
+  - [x] matches worktree path
+  - [x] matches branch
+  - [x] whitespace-only query returns cards unchanged
+  - [x] no match returns empty list
+- [x] Task: Implement `filterCards` (`web/src/filterCards.ts`) to pass tests
+- [x] Task: Refactor (optional) — no refactor needed, implementation already minimal
 - [ ] Task: Phase Verification & Checkpoint (refer to workflow.md)
 
 ## Phase 2 · Wire filter into the board UI
