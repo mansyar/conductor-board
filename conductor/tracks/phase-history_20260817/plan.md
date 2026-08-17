@@ -31,11 +31,11 @@
       it fails. (5b38009)
 - [x] Task: **Green** — implement `createSnapshotRepository(db)` in
       `server/src/historyRepository.ts` using `bun:sqlite` prepared statements. (9abf1a0)
-- [ ] Task: **Red** — extend `server/src/appBoard.test.ts` / add an app test: a
+- [x] Task: **Red** — extend `server/src/appBoard.test.ts` / add an app test: a
       successful `/api/board` load records exactly one snapshot per distinct board
       state; an unchanged reload records none; `GET /api/history` returns the
       ascending snapshot list and the 409/404 contract matches `/api/board`.
-      Confirm it fails.
+      Confirm it fails. (37d5027)
 - [ ] Task: **Green** — wire the repository into `createApp`; record a
       deduplicated snapshot after `loadBoard` in the `/api/board` handler; add
       `GET /api/history`.
