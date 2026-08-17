@@ -9,7 +9,7 @@
 - [x] Task: **Green** — implement `completeMonths.ts`. (ce70df1)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
-## Phase 2 — Preferences persistence
+## Phase 2 — Preferences persistence [checkpoint: b968098]
 - [x] Task: **Red** — add `server/src/preferences.test.ts`:
       `createPreferencesRepository` stores and returns the expanded-months list per
       project (default `[]` when unset) in the `settings` table. (326908f)
