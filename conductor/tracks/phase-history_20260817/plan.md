@@ -52,3 +52,6 @@
       progress summary, hidden below two snapshots (JSX layout is exempt from the
       mandatory-testing scope). (be8320b)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions (eb27e0a)
