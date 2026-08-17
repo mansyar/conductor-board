@@ -54,3 +54,7 @@
         `trackDocPath` in `FileModal` instead of the hardcoded tracks path.
 - [x] Task: Phase Verification & Checkpoint (refer to workflow.md).
   - [checkpoint: fb996d1]
+
+## Review Fixes
+
+- [x] Apply review suggestion (Low #1): dedupe archived cards before aggregating board progress — [f082685]
