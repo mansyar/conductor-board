@@ -23,7 +23,7 @@
 - [x] Task: **Green** — wire the endpoints into `server/src/app.ts`. (0d7ab6b)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
-## Phase 4 — Collapsible Complete column UI
+## Phase 4 — Collapsible Complete column UI [checkpoint: 9027680]
 - [x] Task: add a `fetchPreferences`/`savePreferences` helper + `PreferencesResponse`
       type (thin fetch, exempt from mandatory tests). (136bb18)
 - [x] Task: render month sections in `web/src/Board.tsx` with expand/collapse
