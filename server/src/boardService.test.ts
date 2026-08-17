@@ -203,6 +203,25 @@ describe('loadBoard', () => {
     expect(shared[0].archived).toBe(true);
   });
 
+  test('aggregates progress over deduped archived cards only', async () => {
+    const merge = (wt: string) => ({
+      [`${wt}/conductor/archive/shared/metadata.json`]: JSON.stringify({
+        title: 'Shared',
+      }),
+      [`${wt}/conductor/archive/shared/plan.md`]: PLAN_DONE,
+    });
+    const reads = fakeReads({
+      archiveDirs: { [MAIN]: ['shared'], '/w/feature-a': ['shared'] },
+      files: { ...merge(MAIN), ...merge('/w/feature-a') },
+    });
+
+    const board = await loadBoard(reads, '/w');
+
+    // The shared archived track appears in two worktrees but is counted once.
+    expect(board.cards).toHaveLength(1);
+    expect(board.progress).toEqual({ done: 3, total: 3, pct: 100 });
+  });
+
   test('keeps a worktree with only archived tracks out of the idle lane', async () => {
     const reads = fakeReads({
       archiveDirs: { [MAIN]: ['only-one'] },

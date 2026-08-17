@@ -106,8 +106,6 @@ function idleCard(worktree: WorktreeInfo, notInitialized = false): TrackCard {
 export function composeBoard(groups: WorktreeGroup[]): Board {
   const cards: TrackCard[] = [];
   const idle: TrackCard[] = [];
-  let done = 0;
-  let total = 0;
 
   for (const group of groups) {
     if (group.tracks.length === 0) {
@@ -127,14 +125,21 @@ export function composeBoard(groups: WorktreeGroup[]): Board {
         progress: track.progress,
         archived: track.archived,
       });
-      done += track.progress.done;
-      total += track.progress.total;
     }
+  }
+
+  const boardCards = dedupeArchived(cards);
+
+  let done = 0;
+  let total = 0;
+  for (const card of boardCards) {
+    done += card.progress.done;
+    total += card.progress.total;
   }
 
   return {
     columns: COLUMNS,
-    cards: dedupeArchived(cards),
+    cards: boardCards,
     idle,
     progress: toProgress(done, total),
   };
