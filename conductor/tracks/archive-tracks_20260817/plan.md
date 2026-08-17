@@ -23,24 +23,25 @@
 
 ## Phase 2 — Wire archive discovery into board assembly (server)
 
-- [ ] Task: Add archive directory listing to the reads abstraction.
-  - [ ] Add `listArchiveDirs(worktreePath: string): Promise<string[]>` to the
+- [x] Task: Add archive directory listing to the reads abstraction.
+  - [x] Add `listArchiveDirs(worktreePath: string): Promise<string[]>` to the
         `ProjectReads` interface in `server/src/boardService.ts`.
-  - [ ] Implement it in `server/src/fsProjectReads.ts` using `readdir`
+  - [x] Implement it in `server/src/fsProjectReads.ts` using `readdir`
         (`conductor/archive`), returning entry names that are directories and
         `[]` when the directory is missing.
-- [ ] Task: Load archived tracks in `loadBoard`.
-  - [ ] For each worktree, enumerate archive dirs and build archived `TrackSource`
+- [x] Task: Load archived tracks in `loadBoard`.
+  - [x] For each worktree, enumerate archive dirs and build archived `TrackSource`
         entries (synthetic registry entry: state `'x'`, archived `true`) by reading
         `conductor/archive/<id>/metadata.json` (title) and `.../plan.md` (progress).
-  - [ ] Surface archive tracks even when `conductor/tracks.md` is missing but
+  - [x] Surface archive tracks even when `conductor/tracks.md` is missing but
         `conductor/archive/` exists (do not mark such worktrees `notInitialized`).
-  - [ ] Update `server/src/board.ts` to set `archived: boolean` on `TrackCard`
+  - [x] Update `server/src/board.ts` to set `archived: boolean` on `TrackCard`
         (default `false`) and to run `dedupeArchived` over cards after composing
         them.
-- [ ] Task: Update/add server tests for archive discovery, archive-only worktrees,
+- [x] Task: Update/add server tests for archive discovery, archive-only worktrees,
       and cross-worktree de-duplication.
-- [ ] Task: Phase Verification & Checkpoint (refer to workflow.md).
+- [x] Task: Phase Verification & Checkpoint (refer to workflow.md).
+  - [checkpoint: e86707e]
 
 ## Phase 3 — Frontend: open spec/plan from the archive path
 
