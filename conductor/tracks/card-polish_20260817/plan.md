@@ -7,16 +7,16 @@
 - [x] Task: manually verify `bun run dev:server` binds 3002 and the Vite proxy reaches it.
 - [x] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
-## Phase 2 — Detached-HEAD short SHA
-- [ ] Task: **Red** — extend `server/src/worktrees.test.ts` so porcelain parsing
+## Phase 2 — Detached-HEAD short SHA [checkpoint: aa22322]
+- [x] Task: **Red** — extend `server/src/worktrees.test.ts` so porcelain parsing
       captures the `HEAD <sha>` line on a detached worktree (flows into
       `WorktreeInfo`). Confirm it fails.
-- [ ] Task: **Green** — extend `parseWorktreePorcelain` in
+- [x] Task: **Green** — extend `parseWorktreePorcelain` in
       `server/src/worktrees.ts` to record the HEAD sha; add the field to
       `WorktreeInfo` and thread it through `board.ts` → card.
-- [ ] Task: **Red** — add a `web/src` helper test for formatting the branch label
+- [x] Task: **Red** — add a `web/src` helper test for formatting the branch label
       (`detached (<7-char>)` vs plain branch). Confirm it fails.
-- [ ] Task: **Green** — implement the label formatter and render
+- [x] Task: **Green** — implement the label formatter and render
       `detached (<sha>)` on detached cards in `web/src/Board.tsx`.
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
