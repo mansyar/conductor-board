@@ -2,7 +2,7 @@ import type { Database } from 'bun:sqlite';
 import { existsSync, watch } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { Elysia, t } from 'elysia';
-import type { Board } from './board';
+import { type Board, toProgress } from './board';
 import { loadBoard, type ProjectReads } from './boardService';
 import { isRealPathWithin, resolveWithin } from './fileAccess';
 import { createFsProjectReads } from './fsProjectReads';
@@ -33,7 +33,9 @@ function errorMessage(error: unknown): string {
 /**
  * Records a deduplicated phase-history snapshot for the active project after a
  * successful board load. Writes only to the board's own SQLite (never to the
- * watched conductor/ files).
+ * watched conductor/ files). This synchronous write is idempotent and acceptable
+ * for a single-user local tool; it intentionally keeps recording tied to the
+ * board read path.
  */
 function recordSnapshot(
   snapshots: SnapshotRepository,
@@ -150,6 +152,7 @@ export function createApp(
         set.status = 404;
         return { error: 'Project not found' };
       }
+      snapshots.deleteByProject(Number(params.id));
       syncActiveProject();
       return { removed: true };
     })
@@ -196,10 +199,7 @@ export function createApp(
           observedAt: snapshot.observedAt,
           done: snapshot.done,
           total: snapshot.total,
-          pct:
-            snapshot.total === 0
-              ? 0
-              : Math.round((snapshot.done / snapshot.total) * 100),
+          pct: toProgress(snapshot.done, snapshot.total).pct,
           specPlan: snapshot.specPlan,
           implement: snapshot.implement,
           review: snapshot.review,

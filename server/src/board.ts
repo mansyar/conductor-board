@@ -62,7 +62,7 @@ export const COLUMNS: ColumnId[] = [
 
 export const ZERO_PROGRESS: Progress = { done: 0, total: 0, pct: 0 };
 
-function toProgress(done: number, total: number): Progress {
+export function toProgress(done: number, total: number): Progress {
   return {
     done,
     total,

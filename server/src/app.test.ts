@@ -141,6 +141,22 @@ describe('DELETE /api/projects/:id', () => {
     const res = await del('/api/projects/999999');
     expect(res.status).toBe(404);
   });
+
+  test('removes the project snapshots when deleting', async () => {
+    const { db, post, del } = setup();
+    const created = await post('/api/projects', { path: validPath });
+    const record = (await created.json()) as { id: number };
+    db.query(
+      'INSERT INTO snapshots (project_id, observed_at, state_hash, done, total, spec_plan, implement, review, complete) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    ).run(record.id, '2026-08-17T00:00:00.000Z', 'h', 1, 2, 1, 0, 0, 0);
+
+    await del(`/api/projects/${record.id}`);
+
+    const count = db.query('SELECT COUNT(*) AS c FROM snapshots').get() as {
+      c: number;
+    };
+    expect(count.c).toBe(0);
+  });
 });
 
 describe('PUT /api/projects/:id/active', () => {

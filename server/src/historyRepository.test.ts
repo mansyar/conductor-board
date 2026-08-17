@@ -52,4 +52,15 @@ describe('snapshot repository', () => {
     expect(repo.listRecent(1, 10)).toHaveLength(1);
     expect(repo.listRecent(2, 10)).toHaveLength(1);
   });
+
+  test('deleteByProject removes only that project snapshots', () => {
+    const db = openDatabase(':memory:');
+    const repo = createSnapshotRepository(db);
+    repo.insert(1, summary({ done: 1 }), '2026-08-17T00:00:00.000Z', 'h1');
+    repo.insert(2, summary({ done: 9 }), '2026-08-17T00:01:00.000Z', 'h2');
+
+    expect(repo.deleteByProject(1)).toBe(1);
+    expect(repo.listRecent(1, 10)).toHaveLength(0);
+    expect(repo.listRecent(2, 10)).toHaveLength(1);
+  });
 });

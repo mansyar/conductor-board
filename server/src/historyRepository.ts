@@ -23,6 +23,7 @@ export interface SnapshotRepository {
   ): number;
   latestHash(projectId: number): string | null;
   listRecent(projectId: number, limit: number): Snapshot[];
+  deleteByProject(projectId: number): number;
 }
 
 interface SnapshotRow {
@@ -75,6 +76,10 @@ export function createSnapshotRepository(db: Database): SnapshotRepository {
     ORDER BY observed_at ASC, id ASC
   `);
 
+  const deleteByProjectStmt = db.query(
+    'DELETE FROM snapshots WHERE project_id = ?',
+  );
+
   return {
     insert(projectId, summary, observedAt, stateHash) {
       const result = insertStmt.run(
@@ -101,6 +106,10 @@ export function createSnapshotRepository(db: Database): SnapshotRepository {
     listRecent(projectId, limit) {
       const rows = listRecentStmt.all(projectId, limit) as SnapshotRow[];
       return rows.map(toSnapshot);
+    },
+
+    deleteByProject(projectId) {
+      return deleteByProjectStmt.run(projectId).changes;
     },
   };
 }
