@@ -1,3 +1,4 @@
+import { dedupeArchived } from './archiveTracks';
 import { classifyPhase, type TrackPhase } from './classify';
 import type { TrackEntry } from './registry';
 import type { WorktreeInfo } from './worktrees';
@@ -19,6 +20,8 @@ export interface TrackCard {
   /** Lifecycle column the card belongs to, or null when in the idle lane. */
   columnId: ColumnId | null;
   progress: Progress;
+  /** True when this card represents an archived track. */
+  archived?: boolean;
   /** True when the worktree has no conductor/ directory (not initialized). */
   notInitialized?: boolean;
 }
@@ -122,6 +125,7 @@ export function composeBoard(groups: WorktreeGroup[]): Board {
         trackName: track.entry.description,
         columnId,
         progress: track.progress,
+        archived: track.archived,
       });
       done += track.progress.done;
       total += track.progress.total;
@@ -130,7 +134,7 @@ export function composeBoard(groups: WorktreeGroup[]): Board {
 
   return {
     columns: COLUMNS,
-    cards,
+    cards: dedupeArchived(cards),
     idle,
     progress: toProgress(done, total),
   };

@@ -37,6 +37,9 @@ function fakeReads(files: Record<string, string> = {}): ProjectReads {
     async isArchived() {
       return false;
     },
+    async listArchiveDirs() {
+      return [];
+    },
   };
 }
 

@@ -19,15 +19,22 @@ const PLAN_TWO_OF_FOUR = `# Plan
 - [ ] Task: Four
 `;
 
+const PLAN_DONE = `- [x] Task: A
+- [x] Task: B
+- [x] Task: C
+`;
+
 interface FakeOptions {
   files?: Record<string, string>;
   archived?: string[];
-  /** Keys (relative paths) that should be readable even if absent from files. */
+  /** Worktree path -> archived track folder names returned by listArchiveDirs. */
+  archiveDirs?: Record<string, string[]>;
 }
 
 function fakeReads(options: FakeOptions = {}): ProjectReads {
   const files = new Map(Object.entries(options.files ?? {}));
   const archived = new Set(options.archived ?? []);
+  const archiveDirs = new Map(Object.entries(options.archiveDirs ?? {}));
 
   return {
     async listWorktrees(): Promise<WorktreeInfo[]> {
@@ -35,6 +42,9 @@ function fakeReads(options: FakeOptions = {}): ProjectReads {
         { path: '/w/main', branch: 'main', detached: false },
         { path: '/w/feature-a', branch: 'feature-a', detached: false },
       ];
+    },
+    async listArchiveDirs(worktreePath: string): Promise<string[]> {
+      return archiveDirs.get(worktreePath) ?? [];
     },
     async readTextFile(
       worktreePath: string,
@@ -148,5 +158,65 @@ describe('loadBoard', () => {
     const board = await loadBoard(reads, '/w');
 
     expect(board.progress).toEqual({ done: 6, total: 12, pct: 50 });
+  });
+
+  test('surfaces archived tracks from conductor/archive as complete cards', async () => {
+    const reads = fakeReads({
+      archiveDirs: { [MAIN]: ['archived-1', 'archived-2'] },
+      files: {
+        [`${MAIN}/conductor/archive/archived-1/metadata.json`]: JSON.stringify({
+          title: 'Archived One',
+        }),
+        [`${MAIN}/conductor/archive/archived-1/plan.md`]: PLAN_DONE,
+        [`${MAIN}/conductor/archive/archived-2/metadata.json`]: JSON.stringify({
+          title: 'Archived Two',
+        }),
+        [`${MAIN}/conductor/archive/archived-2/plan.md`]: PLAN_DONE,
+      },
+    });
+
+    const board = await loadBoard(reads, '/w');
+
+    const a1 = board.cards.find((c) => c.trackId === 'archived-1');
+    expect(a1).toBeDefined();
+    expect(a1?.trackName).toBe('Archived One');
+    expect(a1?.columnId).toBe('complete');
+    expect(a1?.archived).toBe(true);
+    expect(a1?.progress).toEqual({ done: 3, total: 3, pct: 100 });
+  });
+
+  test('dedupes archived tracks across worktrees', async () => {
+    const reads = fakeReads({
+      archiveDirs: { [MAIN]: ['shared'], '/w/feature-a': ['shared'] },
+      files: {
+        [`${MAIN}/conductor/archive/shared/metadata.json`]: JSON.stringify({
+          title: 'Shared',
+        }),
+        [`${MAIN}/conductor/archive/shared/plan.md`]: PLAN_DONE,
+      },
+    });
+
+    const board = await loadBoard(reads, '/w');
+
+    const shared = board.cards.filter((c) => c.trackId === 'shared');
+    expect(shared).toHaveLength(1);
+    expect(shared[0].archived).toBe(true);
+  });
+
+  test('keeps a worktree with only archived tracks out of the idle lane', async () => {
+    const reads = fakeReads({
+      archiveDirs: { [MAIN]: ['only-one'] },
+      files: {
+        [`${MAIN}/conductor/archive/only-one/metadata.json`]: JSON.stringify({
+          title: 'Only',
+        }),
+        [`${MAIN}/conductor/archive/only-one/plan.md`]: PLAN_DONE,
+      },
+    });
+
+    const board = await loadBoard(reads, '/w');
+
+    expect(board.idle.find((c) => c.worktreePath === MAIN)).toBeUndefined();
+    expect(board.cards.some((c) => c.trackId === 'only-one')).toBe(true);
   });
 });
