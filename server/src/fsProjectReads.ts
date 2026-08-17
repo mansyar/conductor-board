@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import { access, readFile } from 'node:fs/promises';
+import { access, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 import type { ProjectReads } from './boardService';
@@ -37,6 +37,18 @@ export function createFsProjectReads(): ProjectReads {
         return true;
       } catch {
         return false;
+      }
+    },
+
+    async listArchiveDirs(worktreePath: string) {
+      try {
+        const entries = await readdir(
+          join(worktreePath, 'conductor', 'archive'),
+          { withFileTypes: true },
+        );
+        return entries.filter((e) => e.isDirectory()).map((e) => e.name);
+      } catch {
+        return [];
       }
     },
   };

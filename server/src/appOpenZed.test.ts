@@ -42,6 +42,7 @@ function fakeReads(
     listWorktrees: async () => worktrees,
     readTextFile: async () => '',
     isArchived: async () => false,
+    listArchiveDirs: async () => [],
   };
 }
 

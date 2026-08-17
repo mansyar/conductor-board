@@ -59,3 +59,57 @@ describe('parseTracksRegistry', () => {
     expect(parseTracksRegistry('')).toEqual([]);
   });
 });
+
+const TWO_LINE_ARCHIVE = `# Tracks Registry
+
+## Complete
+
+- [x] **Track: Old Feature**
+      _Link: [./archive/old_20260101/](./archive/old_20260101/)_
+`;
+
+const TWO_LINE_INDEX = `# Tracks Registry
+
+## Active
+
+- [ ] **Track: Idea**
+      _Link: [./tracks/idea_20260201/index.md](./tracks/idea_20260201/index.md)_
+`;
+
+describe('parseTracksRegistry: link on a following indented _Link: line', () => {
+  test('resolves the id from an archive _Link line', () => {
+    const [track] = parseTracksRegistry(TWO_LINE_ARCHIVE);
+    expect(track).toBeDefined();
+    expect(track.id).toBe('old_20260101');
+    expect(track.description).toBe('Old Feature');
+  });
+
+  test('resolves the id from a _Link line pointing at a track index.md', () => {
+    const [track] = parseTracksRegistry(TWO_LINE_INDEX);
+    expect(track).toBeDefined();
+    expect(track.id).toBe('idea_20260201');
+  });
+});
+
+describe('trackIdFromLink: archive and trailing-slash link shapes', () => {
+  test('resolves the id from an archived link target directory', () => {
+    const md =
+      '- [x] **Track: Old Feature** *Link: [./archive/old_20260101/](./archive/old_20260101/)*\n';
+    const [track] = parseTracksRegistry(md);
+    expect(track.id).toBe('old_20260101');
+  });
+
+  test('resolves the id from a trailing-slash link without index.md', () => {
+    const md =
+      '- [ ] **Track: Idea** *Link: [./tracks/idea_20260201/](./tracks/idea_20260201/)*\n';
+    const [track] = parseTracksRegistry(md);
+    expect(track.id).toBe('idea_20260201');
+  });
+
+  test('keeps resolving ids for the standard index.md shape', () => {
+    const md =
+      '- [ ] **Track: Idea** *Link: [./tracks/idea_20260201/index.md](./tracks/idea_20260201/index.md)*\n';
+    const [track] = parseTracksRegistry(md);
+    expect(track.id).toBe('idea_20260201');
+  });
+});

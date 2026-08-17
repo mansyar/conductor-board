@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { COLUMN_CONFIG, COLUMN_ORDER } from './boardColumns';
+import { filterCards } from './filterCards';
 import { subscribeLive } from './liveSubscribe';
 import { openZed } from './openZed';
 import { renderMarkdown } from './renderMarkdown';
+import { trackDocPath } from './trackDocPath';
 import type { Board as BoardModel, TrackCard } from './types';
 
 interface BoardProps {
@@ -28,6 +30,7 @@ interface ModalTarget {
   worktree: string;
   trackId: string;
   trackName: string;
+  archived: boolean;
   kind: ModalKind;
 }
 
@@ -47,7 +50,11 @@ function FileModal({
       try {
         const text = await fetchFileText(
           target.worktree,
-          `conductor/tracks/${target.trackId}/${target.kind}.md`,
+          trackDocPath({
+            archived: target.archived,
+            trackId: target.trackId,
+            kind: target.kind,
+          }),
         );
         if (!cancelled) {
           setContent(text);
@@ -186,6 +193,7 @@ export function Board({ activeId }: BoardProps) {
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState<ModalTarget | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [filter, setFilter] = useState('');
   const toastTimer = useRef<number | null>(null);
 
   const load = useCallback(async () => {
@@ -301,13 +309,27 @@ export function Board({ activeId }: BoardProps) {
   }
 
   const { done, total, pct } = board.progress;
+  const filterActive = filter.trim() !== '';
+
+  const idleCards = board.idle;
+  const idleVisible = filterActive ? filterCards(idleCards, filter) : idleCards;
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-zinc-400">
-          {done}/{total} tasks complete · {pct}%
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <p className="text-sm text-zinc-400">
+            {done}/{total} tasks complete · {pct}%
+          </p>
+          <input
+            type="search"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="Filter cards…"
+            aria-label="Filter cards"
+            className="w-48 rounded border border-zinc-800 bg-zinc-900 px-3 py-1 text-sm text-zinc-200 placeholder:text-zinc-600 focus:border-zinc-600 focus:outline-none"
+          />
+        </div>
         <button
           type="button"
           onClick={() => void load()}
@@ -323,7 +345,14 @@ export function Board({ activeId }: BoardProps) {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           {COLUMN_ORDER.map((columnId) => {
             const config = COLUMN_CONFIG[columnId];
-            const cards = board.cards.filter((c) => c.columnId === columnId);
+            const columnCards = board.cards.filter(
+              (c) => c.columnId === columnId,
+            );
+            const cards = filterActive
+              ? filterCards(columnCards, filter)
+              : columnCards;
+            const empty = cards.length === 0;
+            const searchedAway = empty && columnCards.length > 0;
             return (
               <section key={columnId} className="space-y-2">
                 <header className="flex items-center gap-2">
@@ -331,11 +360,15 @@ export function Board({ activeId }: BoardProps) {
                   <h2 className="text-sm font-medium text-zinc-100">
                     {config.label}
                   </h2>
-                  <span className="text-xs text-zinc-500">{cards.length}</span>
+                  <span className="text-xs text-zinc-500">
+                    {columnCards.length}
+                  </span>
                 </header>
                 <div className="space-y-2">
-                  {cards.length === 0 ? (
-                    <p className="text-xs text-zinc-600">Empty</p>
+                  {empty ? (
+                    <p className="text-xs text-zinc-600">
+                      {searchedAway ? 'No matches' : 'Empty'}
+                    </p>
                   ) : (
                     cards.map((card) => (
                       <TrackCardView
@@ -346,6 +379,7 @@ export function Board({ activeId }: BoardProps) {
                             worktree: card.worktreePath,
                             trackId: card.trackId ?? '',
                             trackName: card.trackName ?? card.trackId ?? '',
+                            archived: card.archived ?? false,
                             kind,
                           })
                         }
@@ -369,15 +403,19 @@ export function Board({ activeId }: BoardProps) {
             <span className="text-xs text-zinc-500">{board.idle.length}</span>
           </header>
           <div className="space-y-2">
-            {board.idle.map((card) => (
-              <TrackCardView
-                key={`idle-${card.worktreePath}`}
-                card={card}
-                onOpen={() => undefined}
-                onCopy={() => void copyPath(card)}
-                onOpenZed={() => void openInZed(card)}
-              />
-            ))}
+            {idleVisible.length === 0 ? (
+              <p className="text-xs text-zinc-600">No matches</p>
+            ) : (
+              idleVisible.map((card) => (
+                <TrackCardView
+                  key={`idle-${card.worktreePath}`}
+                  card={card}
+                  onOpen={() => undefined}
+                  onCopy={() => void copyPath(card)}
+                  onOpenZed={() => void openInZed(card)}
+                />
+              ))
+            )}
           </div>
         </section>
       )}
