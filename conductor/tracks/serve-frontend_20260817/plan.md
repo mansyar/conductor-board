@@ -25,7 +25,7 @@
 - [x] Task: Commit code with a descriptive message and attach a git-note summary [commit: 89baa80]
 - [x] Task: Record the task commit SHA in this plan `[commit: 89baa80]`
 - [x] Task: Commit the plan update
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint [checkpoint: 89baa80] (user confirmed)
 
 ## Phase 3 — Root `serve` script & final gates
 
