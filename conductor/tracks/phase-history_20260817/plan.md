@@ -5,11 +5,11 @@
       v2 creates the `snapshots` table and index, preserves existing
       `projects`/`settings` rows, and sets `PRAGMA user_version` to 2. Confirm it
       fails. (f41e4bf)
-- [ ] Task: **Green** — refactor `migrate` in `server/src/db.ts` into a step-based
+- [x] Task: **Green** — refactor `migrate` in `server/src/db.ts` into a step-based
       loop over versioned SQL migrations, bump `SCHEMA_VERSION` to 2, and add the
       `snapshots` DDL (columns: `id`, `project_id`, `observed_at`, `state_hash`,
       `done`, `total`, `spec_plan`, `implement`, `review`, `complete`) plus the
-      `(project_id, observed_at)` index.
+      `(project_id, observed_at)` index. (f158d7a)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 2 — Board summary & change detection (pure logic)
