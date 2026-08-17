@@ -2,12 +2,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { COLUMN_CONFIG, COLUMN_ORDER } from './boardColumns';
 import { branchLabel } from './branchLabel';
 import { filterCards } from './filterCards';
+import { fetchHistory } from './historyApi';
 import { subscribeLive } from './liveSubscribe';
 import { openZed } from './openZed';
 import { relativeTime } from './relativeTime';
 import { renderMarkdown } from './renderMarkdown';
+import { sparklinePoints } from './sparkline';
 import { trackDocPath } from './trackDocPath';
-import type { Board as BoardModel, TrackCard } from './types';
+import { trendDelta } from './trend';
+import type { Board as BoardModel, HistoryResponse, TrackCard } from './types';
 
 interface BoardProps {
   /** Active project id, or null when none selected. */
@@ -198,6 +201,7 @@ function TrackCardView({ card, onOpen, onCopy, onOpenZed }: CardProps) {
 
 export function Board({ activeId }: BoardProps) {
   const [board, setBoard] = useState<BoardModel | null>(null);
+  const [history, setHistory] = useState<HistoryResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState<ModalTarget | null>(null);
@@ -205,9 +209,18 @@ export function Board({ activeId }: BoardProps) {
   const [filter, setFilter] = useState('');
   const toastTimer = useRef<number | null>(null);
 
+  const loadHistory = useCallback(async () => {
+    try {
+      setHistory(await fetchHistory());
+    } catch {
+      setHistory(null);
+    }
+  }, []);
+
   const load = useCallback(async () => {
     if (activeId === null) {
       setBoard(null);
+      setHistory(null);
       setError(null);
       setLoading(false);
       return;
@@ -225,13 +238,14 @@ export function Board({ activeId }: BoardProps) {
       }
       setBoard((await res.json()) as BoardModel);
       setError(null);
+      void loadHistory();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load board');
       setBoard(null);
     } finally {
       setLoading(false);
     }
-  }, [activeId]);
+  }, [activeId, loadHistory]);
 
   useEffect(() => {
     void load();
@@ -319,6 +333,18 @@ export function Board({ activeId }: BoardProps) {
 
   const { done, total, pct } = board.progress;
   const filterActive = filter.trim() !== '';
+  const historySnapshots = history?.snapshots ?? [];
+  const trendVisible = historySnapshots.length >= 2;
+  const trend = trendVisible
+    ? trendDelta(historySnapshots.map((snapshot) => snapshot.pct))
+    : null;
+  const sparkline = trendVisible
+    ? sparklinePoints(
+        historySnapshots.map((snapshot) => snapshot.pct),
+        120,
+        32,
+      )
+    : '';
 
   const idleCards = board.idle;
   const idleVisible = filterActive ? filterCards(idleCards, filter) : idleCards;
@@ -330,6 +356,29 @@ export function Board({ activeId }: BoardProps) {
           <p className="text-sm text-zinc-400">
             {done}/{total} tasks complete · {pct}%
           </p>
+          {trend !== null && (
+            <span className="flex items-center gap-2 text-xs text-zinc-500">
+              <svg
+                className="text-zinc-400"
+                width="120"
+                height="32"
+                viewBox="0 0 120 32"
+                aria-hidden="true"
+              >
+                <polyline
+                  points={sparkline}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                />
+              </svg>
+              <span>
+                {historySnapshots.length} snapshots ·{' '}
+                {trend.delta > 0 ? '+' : ''}
+                {Math.round(trend.delta)}%
+              </span>
+            </span>
+          )}
           <input
             type="search"
             value={filter}
