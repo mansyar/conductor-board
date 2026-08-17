@@ -29,8 +29,8 @@
       inserts a snapshot, returns the latest `state_hash` (null when empty), and
       lists recent snapshots ascending by `observed_at` capped by a limit. Confirm
       it fails. (5b38009)
-- [ ] Task: **Green** — implement `createSnapshotRepository(db)` in
-      `server/src/historyRepository.ts` using `bun:sqlite` prepared statements.
+- [x] Task: **Green** — implement `createSnapshotRepository(db)` in
+      `server/src/historyRepository.ts` using `bun:sqlite` prepared statements. (9abf1a0)
 - [ ] Task: **Red** — extend `server/src/appBoard.test.ts` / add an app test: a
       successful `/api/board` load records exactly one snapshot per distinct board
       state; an unchanged reload records none; `GET /api/history` returns the
