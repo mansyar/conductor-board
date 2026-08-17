@@ -10,9 +10,9 @@
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 2 — Preferences persistence
-- [ ] Task: **Red** — add `server/src/preferences.test.ts`:
+- [x] Task: **Red** — add `server/src/preferences.test.ts`:
       `createPreferencesRepository` stores and returns the expanded-months list per
-      project (default `[]` when unset) in the `settings` table.
+      project (default `[]` when unset) in the `settings` table. (326908f)
 - [ ] Task: **Green** — implement `server/src/preferences.ts`.
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
