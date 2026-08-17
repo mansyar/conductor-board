@@ -1,6 +1,6 @@
 import { Database } from 'bun:sqlite';
 import { afterAll, beforeAll, describe, expect, test } from 'bun:test';
-import { mkdir, mkdtemp, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createApp } from './app';
@@ -160,5 +160,82 @@ describe('PUT /api/projects/:id/active', () => {
     const { put } = setup();
     const res = await put('/api/projects/999999/active');
     expect(res.status).toBe(404);
+  });
+});
+
+describe('static frontend serving (build present)', () => {
+  let distRoot: string;
+  const build = '<!doctype html><title>board</title>';
+
+  beforeAll(async () => {
+    distRoot = await mkdtemp(join(tmpdir(), 'cb-dist-'));
+    await mkdir(join(distRoot, 'assets'), { recursive: true });
+    await writeFile(join(distRoot, 'index.html'), build);
+    await writeFile(join(distRoot, 'assets', 'app.js'), 'console.log("hi")');
+  });
+
+  afterAll(async () => {
+    await rm(distRoot, { recursive: true, force: true });
+  });
+
+  function setup() {
+    const db = new Database(':memory:');
+    migrate(db);
+    const app = createApp(db, { static: { distDir: distRoot } });
+    const get = (path: string) =>
+      app.handle(new Request(`http://localhost${path}`));
+    return { get };
+  }
+
+  test('serves index.html at / and for non-/api paths (SPA fallback)', async () => {
+    const { get } = setup();
+    const root = await get('/');
+    expect(root.status).toBe(200);
+    expect(await root.text()).toBe(build);
+    const fallback = await get('/some/client/route');
+    expect(fallback.status).toBe(200);
+    expect(await fallback.text()).toBe(build);
+  });
+
+  test('serves built assets from the dist root', async () => {
+    const { get } = setup();
+    const res = await get('/assets/app.js');
+    expect(res.status).toBe(200);
+    expect(await res.text()).toBe('console.log("hi")');
+  });
+
+  test('/api routes keep returning JSON and unknown /api returns 404', async () => {
+    const { get } = setup();
+    const health = await get('/health');
+    expect(health.status).toBe(200);
+    expect(health.headers.get('content-type')).toContain('application/json');
+    const unknown = await get('/api/nope');
+    expect(unknown.status).toBe(404);
+    expect(unknown.headers.get('content-type')).toContain('application/json');
+  });
+});
+
+describe('static serving disabled without a build', () => {
+  let distRoot: string;
+
+  beforeAll(async () => {
+    distRoot = await mkdtemp(join(tmpdir(), 'cb-nodist-'));
+  });
+
+  afterAll(async () => {
+    await rm(distRoot, { recursive: true, force: true });
+  });
+
+  test('non-/api GET is not served as HTML and /api still works', async () => {
+    const db = new Database(':memory:');
+    migrate(db);
+    const app = createApp(db, { static: { distDir: distRoot } });
+    const notServed = await app.handle(new Request('http://localhost/path'));
+    expect(notServed.status).toBe(404);
+    expect(notServed.headers.get('content-type') ?? '').not.toContain(
+      'text/html',
+    );
+    const health = await app.handle(new Request('http://localhost/health'));
+    expect(health.status).toBe(200);
   });
 });

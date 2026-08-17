@@ -1,7 +1,8 @@
 import type { Database } from 'bun:sqlite';
-import { watch } from 'node:fs';
-import { relative, resolve } from 'node:path';
+import { existsSync, watch } from 'node:fs';
+import { join, relative, resolve } from 'node:path';
 import { Elysia, t } from 'elysia';
+import { staticPlugin } from '@elysiajs/static';
 import { loadBoard, type ProjectReads } from './boardService';
 import { isRealPathWithin, resolveWithin } from './fileAccess';
 import { createFsProjectReads } from './fsProjectReads';
@@ -12,6 +13,7 @@ import {
 } from './liveUpdates';
 import { createZedRunner, type ZedRunner } from './openZed';
 import { createProjectRepository } from './projects';
+import { staticServeConfig } from './staticServe';
 
 export type App = ReturnType<typeof createApp>;
 
@@ -40,7 +42,12 @@ function realWatch(dir: string, onEvent: () => void): WatchHandle {
  */
 export function createApp(
   db: Database,
-  deps?: { reads?: ProjectReads; zed?: ZedRunner; live?: LiveService },
+  deps?: {
+    reads?: ProjectReads;
+    zed?: ZedRunner;
+    live?: LiveService;
+    static?: { distDir?: string };
+  },
 ) {
   const projects = createProjectRepository(db);
   const reads = deps?.reads ?? createFsProjectReads();
@@ -48,6 +55,12 @@ export function createApp(
   const live =
     deps?.live ??
     createLiveService({ listWorktrees: reads.listWorktrees, watch: realWatch });
+
+  // Serve the compiled SPA (web/dist) only when a build exists, so the dev loop
+  // (Vite + `/api` proxy) is unaffected during development.
+  const distDir =
+    deps?.static?.distDir ?? join(import.meta.dir, '..', '..', 'web', 'dist');
+  const { enabled, indexHtml } = staticServeConfig(distDir);
 
   /** Point the live service at whatever project is currently active. */
   function syncActiveProject(): void {
@@ -60,7 +73,7 @@ export function createApp(
   }
   syncActiveProject();
 
-  return new Elysia()
+  const app = new Elysia()
     .get('/health', () => ({ status: 'ok' }))
     .get('/api/events', () => {
       let unsubscribe: (() => void) | undefined;
@@ -228,4 +241,34 @@ export function createApp(
         headers: { 'content-type': 'text/plain; charset=utf-8' },
       });
     });
+
+  if (enabled) {
+    app.use(staticPlugin({ assets: distDir, prefix: '/' }));
+  }
+
+  // SPA history fallback for non-/api GET misses. Matched routes (incl. `/api/*`)
+  // win first; an existing file in the dist root is served directly (so assets
+  // resolve even when the static plugin doesn't set a content type), otherwise
+  // index.html is returned (`200`) to support future client-side routes. An
+  // unknown `/api/*` path returns 404 (JSON) rather than HTML.
+  app.get('*', ({ path, set }) => {
+    if (path.startsWith('/api')) {
+      set.status = 404;
+      return { error: 'Not found' };
+    }
+    if (indexHtml === null) {
+      set.status = 404;
+      return 'Not found';
+    }
+    const rel = decodeURIComponent(path.replace(/^\/+/, '').split('?')[0]);
+    const target = rel === '' ? null : resolveWithin(distDir, rel);
+    if (target !== null && existsSync(target)) {
+      return new Response(Bun.file(target));
+    }
+    return new Response(Bun.file(indexHtml), {
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    });
+  });
+
+  return app;
 }
