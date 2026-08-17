@@ -18,9 +18,9 @@
       excluded); `computeStateHash` is deterministic and differs when any summary
       field changes; `shouldRecordSnapshot` is true for a null previous hash and
       for a different hash, false for an equal hash. Confirm it fails. (ba8eed2)
-- [ ] Task: **Green** — implement `summarizeBoard`, `computeStateHash`, and
-      `shouldRecordSnapshot` in `server/src/history.ts`.
-- [ ] Task: Refactor (optional) — keep the summary/hash implementation minimal and
+- [x] Task: **Green** — implement `summarizeBoard`, `computeStateHash`, and
+      `shouldRecordSnapshot` in `server/src/history.ts`. (39b487d)
+- [x] Task: Refactor (optional) — keep the summary/hash implementation minimal and
       collision-safe for the small summary shape.
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
