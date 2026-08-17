@@ -31,10 +31,10 @@
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 4 — Last-modified (relative time)
-- [ ] Task: **Red** — extend `server/src/boardService.test.ts`: a track card's
+- [x] Task: **Red** — extend `server/src/boardService.test.ts`: a track card's
       `lastModifiedMs` equals the newest mtime across its spec/plan/metadata;
       a missing dir yields `null`. Confirm it fails.
-- [ ] Task: **Green** — add `readMtimeMs(worktreePath, relPath): Promise<number | null>`
+- [~] Task: **Green** — add `readMtimeMs(worktreePath, relPath): Promise<number | null>`
       to `ProjectReads` and `fsProjectReads` (and update fakes in affected test
       files); `loadBoard` computes the max and `board.ts` embeds it on cards.
 - [ ] Task: **Red** — add a `web/src` test for a `relativeTime(ms)` formatter

@@ -54,6 +54,7 @@ function fakeReads(
     readTextFile: async () => '',
     isArchived: async () => false,
     listArchiveDirs: async () => [],
+    readMtimeMs: async () => null,
   };
 }
 

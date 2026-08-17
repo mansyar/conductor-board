@@ -21,6 +21,11 @@ export interface ProjectReads {
   isArchived(worktreePath: string, trackId: string): Promise<boolean>;
   /** Names of archived-track folders under conductor/archive/ ([] if absent). */
   listArchiveDirs(worktreePath: string): Promise<string[]>;
+  /**
+   * Modification time (epoch ms) of a file relative to a worktree, or null when
+   * the file does not exist or its mtime cannot be read.
+   */
+  readMtimeMs(worktreePath: string, relativePath: string): Promise<number | null>;
 }
 
 async function readOptional(
@@ -44,6 +49,29 @@ async function listArchiveDirsOrEmpty(
   } catch {
     return [];
   }
+}
+
+/**
+ * Newest mtime (epoch ms) across the track's own conductor files in its
+ * directory (spec/plan/metadata, whichever exist), or null when none of them
+ * can be read.
+ */
+async function readLastModifiedMs(
+  reads: ProjectReads,
+  worktreePath: string,
+  trackDir: string,
+): Promise<number | null> {
+  const relPaths = ['spec.md', 'plan.md', 'metadata.json'].map(
+    (name) => `${trackDir}/${name}`,
+  );
+  let newest: number | null = null;
+  for (const relPath of relPaths) {
+    const mtime = await reads.readMtimeMs(worktreePath, relPath);
+    if (mtime !== null && (newest === null || mtime > newest)) {
+      newest = mtime;
+    }
+  }
+  return newest;
 }
 
 /**
@@ -92,11 +120,20 @@ export async function loadBoard(
             : `conductor/tracks/${entry.id}/plan.md`,
         );
 
+        const lastModifiedMs = await readLastModifiedMs(
+          reads,
+          worktree.path,
+          archived
+            ? `conductor/archive/${entry.id}`
+            : `conductor/tracks/${entry.id}`,
+        );
+
         tracks.push({
           worktree,
           entry,
           archived,
           progress: countPlanProgress(planMd),
+          lastModifiedMs,
         });
       }
     }
@@ -112,6 +149,11 @@ export async function loadBoard(
         worktree.path,
         `conductor/archive/${id}/plan.md`,
       );
+      const lastModifiedMs = await readLastModifiedMs(
+        reads,
+        worktree.path,
+        `conductor/archive/${id}`,
+      );
       tracks.push({
         worktree,
         entry: {
@@ -122,6 +164,7 @@ export async function loadBoard(
         },
         archived: true,
         progress: countPlanProgress(planMd),
+        lastModifiedMs,
       });
     }
 

@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import { access, readdir, readFile } from 'node:fs/promises';
+import { access, readdir, readFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 import type { ProjectReads } from './boardService';
@@ -49,6 +49,15 @@ export function createFsProjectReads(): ProjectReads {
         return entries.filter((e) => e.isDirectory()).map((e) => e.name);
       } catch {
         return [];
+      }
+    },
+
+    async readMtimeMs(worktreePath: string, relativePath: string) {
+      try {
+        const info = await stat(join(worktreePath, relativePath));
+        return info.mtimeMs;
+      } catch {
+        return null;
       }
     },
   };

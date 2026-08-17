@@ -27,7 +27,13 @@ function source(
   archived = false,
   wt: WorktreeInfo = worktree('/worktrees/main'),
 ): TrackSource {
-  return { worktree: wt, entry: track, archived, progress };
+  return {
+    worktree: wt,
+    entry: track,
+    archived,
+    progress,
+    lastModifiedMs: null,
+  };
 }
 
 describe('countPlanProgress', () => {

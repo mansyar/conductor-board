@@ -29,12 +29,15 @@ interface FakeOptions {
   archived?: string[];
   /** Worktree path -> archived track folder names returned by listArchiveDirs. */
   archiveDirs?: Record<string, string[]>;
+  /** Relative path -> mtime in ms, for readMtimeMs. */
+  mtimes?: Record<string, number>;
 }
 
 function fakeReads(options: FakeOptions = {}): ProjectReads {
   const files = new Map(Object.entries(options.files ?? {}));
   const archived = new Set(options.archived ?? []);
   const archiveDirs = new Map(Object.entries(options.archiveDirs ?? {}));
+  const mtimes = new Map(Object.entries(options.mtimes ?? {}));
 
   return {
     async listWorktrees(): Promise<WorktreeInfo[]> {
@@ -66,6 +69,15 @@ function fakeReads(options: FakeOptions = {}): ProjectReads {
     },
     async isArchived(worktreePath: string, trackId: string): Promise<boolean> {
       return archived.has(`${worktreePath}/conductor/archive/${trackId}`);
+    },
+    async readMtimeMs(
+      worktreePath: string,
+      relativePath: string,
+    ): Promise<number | null> {
+      const key = relativePath.startsWith(worktreePath)
+        ? relativePath
+        : `${worktreePath}/${relativePath}`;
+      return mtimes.get(key) ?? null;
     },
   };
 }
@@ -242,5 +254,50 @@ describe('loadBoard', () => {
 
     expect(board.idle.find((c) => c.worktreePath === MAIN)).toBeUndefined();
     expect(board.cards.some((c) => c.trackId === 'only-one')).toBe(true);
+  });
+
+  test('sets lastModifiedMs to the newest mtime across the track files', async () => {
+    const reads = fakeReads({
+      files: {
+        [`${MAIN}/conductor/tracks.md`]: REGISTRY,
+        [`${MAIN}/conductor/tracks/spec_20260101/plan.md`]: PLAN_TWO_OF_FOUR,
+        [`${MAIN}/conductor/tracks/impl_20260102/plan.md`]: PLAN_TWO_OF_FOUR,
+        [`${MAIN}/conductor/tracks/review_20260103/plan.md`]: PLAN_TWO_OF_FOUR,
+      },
+      mtimes: {
+        [`${MAIN}/conductor/tracks/spec_20260101/spec.md`]: 100,
+        [`${MAIN}/conductor/tracks/spec_20260101/plan.md`]: 300,
+        [`${MAIN}/conductor/tracks/spec_20260101/metadata.json`]: 200,
+        [`${MAIN}/conductor/tracks/impl_20260102/spec.md`]: 50,
+        [`${MAIN}/conductor/tracks/impl_20260102/plan.md`]: 80,
+      },
+    });
+
+    const board = await loadBoard(reads, '/w');
+
+    const byId: Record<string, (typeof board.cards)[0]> = {};
+    for (const card of board.cards) {
+      if (card.trackId !== null) {
+        byId[card.trackId] = card;
+      }
+    }
+    expect(byId.spec_20260101.lastModifiedMs).toBe(300);
+    expect(byId.impl_20260102.lastModifiedMs).toBe(80);
+    // review_20260103 has no mtime entries -> null
+    expect(byId.review_20260103.lastModifiedMs).toBeNull();
+  });
+
+  test('yields a null lastModifiedMs when the track dir is missing', async () => {
+    const reads = fakeReads({
+      files: {
+        [`${MAIN}/conductor/tracks.md`]: REGISTRY,
+      },
+    });
+
+    const board = await loadBoard(reads, '/w');
+
+    for (const card of board.cards) {
+      expect(card.lastModifiedMs).toBeNull();
+    }
   });
 });

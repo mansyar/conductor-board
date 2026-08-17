@@ -22,6 +22,8 @@ export interface TrackCard {
   /** Lifecycle column the card belongs to, or null when in the idle lane. */
   columnId: ColumnId | null;
   progress: Progress;
+  /** Newest mtime (epoch ms) across the track's own conductor files, if any. */
+  lastModifiedMs: number | null;
   /** True when this card represents an archived track. */
   archived?: boolean;
   /** True when the worktree has no conductor/ directory (not initialized). */
@@ -33,6 +35,7 @@ export interface TrackSource {
   entry: TrackEntry;
   archived: boolean;
   progress: Progress;
+  lastModifiedMs: number | null;
 }
 
 export interface WorktreeGroup {
@@ -97,6 +100,7 @@ function idleCard(worktree: WorktreeInfo, notInitialized = false): TrackCard {
     trackName: null,
     columnId: null,
     progress: ZERO_PROGRESS,
+    lastModifiedMs: null,
     notInitialized,
   };
 }
@@ -127,6 +131,7 @@ export function composeBoard(groups: WorktreeGroup[]): Board {
         trackName: track.entry.description,
         columnId,
         progress: track.progress,
+        lastModifiedMs: track.lastModifiedMs,
         archived: track.archived,
       });
     }

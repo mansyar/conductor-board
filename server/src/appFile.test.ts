@@ -43,6 +43,9 @@ function fakeReads(files: Record<string, string> = {}): ProjectReads {
     async listArchiveDirs() {
       return [];
     },
+    async readMtimeMs() {
+      return null;
+    },
   };
 }
 
