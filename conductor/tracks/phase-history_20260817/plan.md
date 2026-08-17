@@ -1,10 +1,10 @@
 # Plan — Phase-history snapshots & progress trend
 
 ## Phase 1 — Versioned snapshot schema
-- [ ] Task: **Red** — extend `server/src/db.test.ts`: migrating a v1 database to
+- [x] Task: **Red** — extend `server/src/db.test.ts`: migrating a v1 database to
       v2 creates the `snapshots` table and index, preserves existing
       `projects`/`settings` rows, and sets `PRAGMA user_version` to 2. Confirm it
-      fails.
+      fails. (f41e4bf)
 - [ ] Task: **Green** — refactor `migrate` in `server/src/db.ts` into a step-based
       loop over versioned SQL migrations, bump `SCHEMA_VERSION` to 2, and add the
       `snapshots` DDL (columns: `id`, `project_id`, `observed_at`, `state_hash`,
