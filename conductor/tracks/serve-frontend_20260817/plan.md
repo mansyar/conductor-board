@@ -6,7 +6,7 @@
       (`@elysiajs/static`, served from `web/dist` when present) and the root `bun run serve`
       script (documented before implementation per workflow) [commit: 49bfc53]
 - [x] Task: Add `@elysiajs/static` to `server/package.json` and install it [commit: b3d1218]
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint [checkpoint: b3d1218] (only docs + config changed; user confirmed)
 
 ## Phase 2 — TDD: serve-gating & SPA fallback
 
