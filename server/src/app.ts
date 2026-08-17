@@ -1,8 +1,8 @@
 import type { Database } from 'bun:sqlite';
 import { existsSync, watch } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
-import { Elysia, t } from 'elysia';
 import { staticPlugin } from '@elysiajs/static';
+import { Elysia, t } from 'elysia';
 import { loadBoard, type ProjectReads } from './boardService';
 import { isRealPathWithin, resolveWithin } from './fileAccess';
 import { createFsProjectReads } from './fsProjectReads';

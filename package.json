@@ -11,6 +11,7 @@
     "dev:server": "bun run --filter @conductor-board/server dev",
     "dev:web": "bun run --filter @conductor-board/web dev",
     "build": "bun run --filter @conductor-board/web build",
+    "serve": "bun run build && bun run --filter @conductor-board/server start",
     "check": "biome check .",
     "typecheck": "bun run --filter @conductor-board/server typecheck && bun run --filter @conductor-board/web typecheck"
   },
