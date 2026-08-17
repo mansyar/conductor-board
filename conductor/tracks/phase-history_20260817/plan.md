@@ -13,11 +13,11 @@
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 2 — Board summary & change detection (pure logic)
-- [ ] Task: **Red** — add `server/src/history.test.ts`: `summarizeBoard` reduces a
+- [x] Task: **Red** — add `server/src/history.test.ts`: `summarizeBoard` reduces a
       board to `{ done, total, specPlan, implement, review, complete }` (idle cards
       excluded); `computeStateHash` is deterministic and differs when any summary
       field changes; `shouldRecordSnapshot` is true for a null previous hash and
-      for a different hash, false for an equal hash. Confirm it fails.
+      for a different hash, false for an equal hash. Confirm it fails. (ba8eed2)
 - [ ] Task: **Green** — implement `summarizeBoard`, `computeStateHash`, and
       `shouldRecordSnapshot` in `server/src/history.ts`.
 - [ ] Task: Refactor (optional) — keep the summary/hash implementation minimal and
