@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'bun:test';
 import {
-  UNSORTED_KEY,
   groupCardsByMonth,
   monthBucketKey,
   monthBucketLabel,
+  UNSORTED_KEY,
 } from './completeMonths';
 import type { TrackCard } from './types';
 
