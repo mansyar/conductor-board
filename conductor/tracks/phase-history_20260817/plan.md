@@ -25,10 +25,10 @@
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 3 — Snapshot persistence, recording, and endpoint
-- [ ] Task: **Red** — add `server/src/historyRepository.test.ts`: the repository
+- [x] Task: **Red** — add `server/src/historyRepository.test.ts`: the repository
       inserts a snapshot, returns the latest `state_hash` (null when empty), and
       lists recent snapshots ascending by `observed_at` capped by a limit. Confirm
-      it fails.
+      it fails. (5b38009)
 - [ ] Task: **Green** — implement `createSnapshotRepository(db)` in
       `server/src/historyRepository.ts` using `bun:sqlite` prepared statements.
 - [ ] Task: **Red** — extend `server/src/appBoard.test.ts` / add an app test: a
