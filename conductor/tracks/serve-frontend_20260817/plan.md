@@ -41,4 +41,8 @@
 - [x] Task: Phase Verification & Checkpoint [checkpoint: 982314a] (user confirmed)
 
 ## Phase: Review Fixes
-- [ ] Task: (reserved for conductor-review corrections)
+- [x] Task: Apply review suggestions [commit: 09d0287]
+  - [x] Remove `@elysiajs/static` (dead dependency — the `get('*')` catch-all serves assets and
+        fallback) and update `tech-stack.md` with a dated deviation note
+  - [x] Guard `decodeURIComponent` against malformed URIs
+  - [x] Re-run gates (`bun test`, typecheck, biome) — all pass
