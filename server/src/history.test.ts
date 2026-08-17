@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'bun:test';
 import { composeBoard, type TrackSource } from './board';
 import {
+  type BoardSummary,
   computeStateHash,
   shouldRecordSnapshot,
   summarizeBoard,
-  type BoardSummary,
 } from './history';
 import type { TrackEntry } from './registry';
 import type { WorktreeInfo } from './worktrees';
