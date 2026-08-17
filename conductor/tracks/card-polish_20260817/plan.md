@@ -38,8 +38,8 @@
       to `ProjectReads` and `fsProjectReads` (and update fakes in affected test
       files); `loadBoard` computes the max and `board.ts` embeds it on cards.
       (91d0efb)
-- [~] Task: **Red** — add a `web/src` test for a `relativeTime(ms)` formatter
+- [x] Task: **Red** — add a `web/src` test for a `relativeTime(ms)` formatter
       (`just now`, `2h ago`, `3d ago`). Confirm it fails.
-- [ ] Task: **Green** — implement `relativeTime` and render it on cards (omitted
-      when `null`, including idle / not-initialized).
-- [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
+- [x] Task: **Green** — implement `relativeTime` and render it on cards (omitted
+      when `null`, including idle / not-initialized). (1444787)
+- [~] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
