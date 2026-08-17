@@ -13,7 +13,7 @@
 - [x] Task: **Red** — add `server/src/preferences.test.ts`:
       `createPreferencesRepository` stores and returns the expanded-months list per
       project (default `[]` when unset) in the `settings` table. (326908f)
-- [ ] Task: **Green** — implement `server/src/preferences.ts`.
+- [x] Task: **Green** — implement `server/src/preferences.ts`. (b968098)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 3 — Preferences endpoints
