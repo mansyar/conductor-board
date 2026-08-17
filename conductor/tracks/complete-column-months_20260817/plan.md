@@ -16,7 +16,7 @@
 - [x] Task: **Green** — implement `server/src/preferences.ts`. (b968098)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
-## Phase 3 — Preferences endpoints
+## Phase 3 — Preferences endpoints [checkpoint: 0d7ab6b]
 - [x] Task: **Red** — add app tests: `GET /api/preferences` returns 409 without an
       active project and the stored expanded months otherwise; `PUT
       /api/preferences` persists and echoes them. (54e85b8)
