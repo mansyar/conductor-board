@@ -20,7 +20,7 @@
       `detached (<sha>)` on detached cards in `web/src/Board.tsx`.
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
-## Phase 3 — Branch badge layout
+## Phase 3 — Branch badge layout [checkpoint: e8b0985]
 - [x] Task: restructure `TrackCardView` in `web/src/Board.tsx` — branch (or
       detached label) as a distinct badge on its own line; demote the worktree
       path to a quiet subtitle. (JSX layout is exempt from the mandatory-testing
