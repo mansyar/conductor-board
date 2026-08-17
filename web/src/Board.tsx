@@ -130,13 +130,15 @@ function TrackCardView({ card, onOpen, onCopy, onOpenZed }: CardProps) {
       {card.trackId !== null && (
         <p className="mt-0.5 text-xs text-zinc-500">{card.trackId}</p>
       )}
+      {branch !== '' && (
+        <span className="mt-2 inline-block max-w-full truncate rounded border border-zinc-700 bg-zinc-800 px-1.5 py-0.5 font-mono text-xs text-zinc-300">
+          {branch}
+        </span>
+      )}
       {card.notInitialized && (
         <p className="mt-1 text-xs text-amber-400">Not initialized</p>
       )}
-      <p className="mt-1 truncate text-xs text-zinc-400">
-        {card.worktreePath}
-        {branch !== '' && ` · ${branch}`}
-      </p>
+      <p className="mt-1 truncate text-xs text-zinc-500">{card.worktreePath}</p>
       {card.progress.total > 0 && (
         <div className="mt-2">
           <div className="h-1.5 w-full overflow-hidden rounded bg-zinc-800">
