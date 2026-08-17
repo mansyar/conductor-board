@@ -2,9 +2,19 @@ import type { Database } from 'bun:sqlite';
 import { existsSync, watch } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { Elysia, t } from 'elysia';
+import type { Board } from './board';
 import { loadBoard, type ProjectReads } from './boardService';
 import { isRealPathWithin, resolveWithin } from './fileAccess';
 import { createFsProjectReads } from './fsProjectReads';
+import {
+  computeStateHash,
+  shouldRecordSnapshot,
+  summarizeBoard,
+} from './history';
+import {
+  createSnapshotRepository,
+  type SnapshotRepository,
+} from './historyRepository';
 import {
   createLiveService,
   type LiveService,
@@ -18,6 +28,23 @@ export type App = ReturnType<typeof createApp>;
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'Unknown error';
+}
+
+/**
+ * Records a deduplicated phase-history snapshot for the active project after a
+ * successful board load. Writes only to the board's own SQLite (never to the
+ * watched conductor/ files).
+ */
+function recordSnapshot(
+  snapshots: SnapshotRepository,
+  projectId: number,
+  board: Board,
+): void {
+  const summary = summarizeBoard(board);
+  const stateHash = computeStateHash(summary);
+  if (shouldRecordSnapshot(snapshots.latestHash(projectId), stateHash)) {
+    snapshots.insert(projectId, summary, new Date().toISOString(), stateHash);
+  }
 }
 
 /**
@@ -49,6 +76,7 @@ export function createApp(
   },
 ) {
   const projects = createProjectRepository(db);
+  const snapshots = createSnapshotRepository(db);
   const reads = deps?.reads ?? createFsProjectReads();
   const zed = deps?.zed ?? createZedRunner();
   const live =
@@ -147,7 +175,37 @@ export function createApp(
         set.status = 404;
         return { error: 'Active project not found' };
       }
-      return await loadBoard(reads, project.path);
+      const board = await loadBoard(reads, project.path);
+      recordSnapshot(snapshots, activeId, board);
+      return board;
+    })
+    .get('/api/history', ({ set }) => {
+      const activeId = projects.getActive();
+      if (activeId === null) {
+        set.status = 409;
+        return { error: 'No active project selected' };
+      }
+      const project = projects.list().find((p) => p.id === activeId);
+      if (project === undefined) {
+        set.status = 404;
+        return { error: 'Active project not found' };
+      }
+      return {
+        projectId: activeId,
+        snapshots: snapshots.listRecent(activeId, 100).map((snapshot) => ({
+          observedAt: snapshot.observedAt,
+          done: snapshot.done,
+          total: snapshot.total,
+          pct:
+            snapshot.total === 0
+              ? 0
+              : Math.round((snapshot.done / snapshot.total) * 100),
+          specPlan: snapshot.specPlan,
+          implement: snapshot.implement,
+          review: snapshot.review,
+          complete: snapshot.complete,
+        })),
+      };
     })
     .post(
       '/api/open-zed',
