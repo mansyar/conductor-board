@@ -4,6 +4,7 @@ import { filterCards } from './filterCards';
 import { subscribeLive } from './liveSubscribe';
 import { openZed } from './openZed';
 import { renderMarkdown } from './renderMarkdown';
+import { trackDocPath } from './trackDocPath';
 import type { Board as BoardModel, TrackCard } from './types';
 
 interface BoardProps {
@@ -29,6 +30,7 @@ interface ModalTarget {
   worktree: string;
   trackId: string;
   trackName: string;
+  archived: boolean;
   kind: ModalKind;
 }
 
@@ -48,7 +50,11 @@ function FileModal({
       try {
         const text = await fetchFileText(
           target.worktree,
-          `conductor/tracks/${target.trackId}/${target.kind}.md`,
+          trackDocPath({
+            archived: target.archived,
+            trackId: target.trackId,
+            kind: target.kind,
+          }),
         );
         if (!cancelled) {
           setContent(text);
@@ -373,6 +379,7 @@ export function Board({ activeId }: BoardProps) {
                             worktree: card.worktreePath,
                             trackId: card.trackId ?? '',
                             trackName: card.trackName ?? card.trackId ?? '',
+                            archived: card.archived ?? false,
                             kind,
                           })
                         }

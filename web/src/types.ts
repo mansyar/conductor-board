@@ -25,6 +25,8 @@ export interface TrackCard {
   trackName: string | null;
   columnId: ColumnId | null;
   progress: Progress;
+  /** True when this card represents an archived track. */
+  archived?: boolean;
   notInitialized?: boolean;
 }
 
