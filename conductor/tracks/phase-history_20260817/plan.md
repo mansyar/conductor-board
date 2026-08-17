@@ -42,10 +42,10 @@
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 4 — Progress trend in the UI
-- [ ] Task: **Red** — add `web/src/sparkline.test.ts` and `web/src/trend.test.ts`:
+- [x] Task: **Red** — add `web/src/sparkline.test.ts` and `web/src/trend.test.ts`:
       `sparklinePoints` maps a values array to an SVG polyline string within a
       given width/height (handles flat and empty series); `trendDelta` returns the
-      first-to-last percentage-point change and its direction. Confirm they fail.
+      first-to-last percentage-point change and its direction. Confirm they fail. (89e6a25)
 - [ ] Task: **Green** — implement `sparkline.ts` and `trend.ts`; add a
       `HistorySnapshot` type and a `fetchHistory` helper.
 - [ ] Task: render the sparkline + trend caption in `web/src/Board.tsx` next to the
