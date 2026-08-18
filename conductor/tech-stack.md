@@ -51,6 +51,11 @@
   month (from `lastModifiedMs`, newest first, with an `Unsorted` bucket) into collapsible
   sections that default to collapsed; expansion state loads from and persists to
   `/api/preferences` per project.
+- **Month-section UI polish** (added 2026-08-18) — month headers show styled count
+  badges and stick to the viewport top while their section is on screen, and the
+  Complete column header gains an expand-all / collapse-all control (pure helpers
+  `allMonthsExpanded` / `nextExpansionSet` in `web/src/completeMonths.ts`) that flips
+  every month's state and persists it via the same `/api/preferences` endpoints.
 
 ## Testing
 

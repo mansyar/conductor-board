@@ -14,8 +14,9 @@ track onto a four-column kanban: Spec & Plan, Implement, Review, and Complete.
 Conductor Board also remembers each board state it has observed: it records a
 snapshot whenever the aggregate progress changes and shows a progress sparkline and
 trend in the header. To keep the Complete column scannable as tracks are archived,
-completed cards are grouped into collapsible month sections, and each project
-remembers which months are expanded.
+completed cards are grouped into collapsible month sections with count badges and
+sticky headers, an expand-all / collapse-all control, and each project remembers
+which months are expanded.
 
 The board is strictly read-only over `conductor/`. It does not create, advance, or
 archive tracks; it simply makes the current state legible, with a few navigation
@@ -27,8 +28,9 @@ affordances (view spec/plan, copy paths, open a worktree in Zed).
 - Offer fast, low-friction actions to jump into the work (spec, plan, Zed).
 - Remember registered projects across sessions.
 - Remember progress over time: persist board snapshots and show a trend sparkline.
-- Keep the Complete column scannable: group archived tracks by month and remember
-  which sections are expanded per project.
+- Keep the Complete column scannable: group archived tracks by month with count
+  badges and sticky headers, offer an expand-all / collapse-all control, and
+  remember which sections are expanded per project.
 
 ## Non-Goals
 
