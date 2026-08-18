@@ -1,8 +1,10 @@
 import { describe, expect, test } from 'bun:test';
 import {
+  allMonthsExpanded,
   groupCardsByMonth,
   monthBucketKey,
   monthBucketLabel,
+  nextExpansionSet,
   UNSORTED_KEY,
 } from './completeMonths';
 import type { TrackCard } from './types';
@@ -39,6 +41,42 @@ describe('monthBucketLabel', () => {
 
   test('labels the unsorted key', () => {
     expect(monthBucketLabel(UNSORTED_KEY)).toBe('Unsorted');
+  });
+});
+
+describe('allMonthsExpanded', () => {
+  test('returns true only when every month key is expanded', () => {
+    const keys = ['2026-08', '2026-07', UNSORTED_KEY];
+    expect(
+      allMonthsExpanded(keys, new Set(['2026-08', '2026-07', UNSORTED_KEY])),
+    ).toBe(true);
+    expect(allMonthsExpanded(keys, new Set(['2026-08', '2026-07']))).toBe(
+      false,
+    );
+    expect(allMonthsExpanded(keys, new Set())).toBe(false);
+  });
+
+  test('returns false for an empty key list', () => {
+    expect(allMonthsExpanded([], new Set())).toBe(false);
+  });
+});
+
+describe('nextExpansionSet', () => {
+  test('expands every month when not all are expanded', () => {
+    const keys = ['2026-08', '2026-07', UNSORTED_KEY];
+    const next = nextExpansionSet(keys, new Set(['2026-08']));
+    expect([...next].sort()).toEqual(
+      ['2026-08', '2026-07', UNSORTED_KEY].sort(),
+    );
+  });
+
+  test('collapses every month when all are expanded, preserving others', () => {
+    const keys = ['2026-08', '2026-07'];
+    const next = nextExpansionSet(
+      keys,
+      new Set(['2026-08', '2026-07', '2026-06']),
+    );
+    expect([...next]).toEqual(['2026-06']);
   });
 });
 
