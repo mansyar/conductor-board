@@ -34,6 +34,9 @@
   server records a deduplicated snapshot of aggregate progress and per-column counts into
   the `snapshots` table (schema v2), and `GET /api/history` serves the recent window. The
   SPA renders a progress sparkline + trend delta from it.
+- **Per-project preferences** (added 2026-08-17) — `GET/PUT /api/preferences` read and
+  write the active project's expanded Complete-column months, stored as JSON in the
+  `settings` table (default: all months collapsed).
 
 ## Frontend
 
@@ -44,6 +47,10 @@
   - **marked** — markdown → HTML parsing, alongside **marked-highlight** to hook in highlighting.
   - **DOMPurify** — sanitize rendered HTML before injection.
   - **highlight.js** — syntax highlighting for fenced code blocks (board-dark theme).
+- **Collapsible Complete column** (added 2026-08-17) — completed cards are grouped by
+  month (from `lastModifiedMs`, newest first, with an `Unsorted` bucket) into collapsible
+  sections that default to collapsed; expansion state loads from and persists to
+  `/api/preferences` per project.
 
 ## Testing
 
