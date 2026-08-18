@@ -1,6 +1,6 @@
 # Plan — Polish the Complete column's month-section UI
 
-## Phase 1 — Expand/collapse-all state logic (pure)
+## Phase 1 — Expand/collapse-all state logic (pure) [checkpoint: 9812d2f]
 - [x] Task: **Red** — extend `web/src/completeMonths.test.ts`:
       `allMonthsExpanded(monthKeys, expanded)` returns `true` only when every
       month key (including `unsorted`) is in the expanded set;
