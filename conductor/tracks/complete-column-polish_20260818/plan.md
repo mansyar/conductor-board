@@ -1,12 +1,14 @@
 # Plan — Polish the Complete column's month-section UI
 
 ## Phase 1 — Expand/collapse-all state logic (pure)
-- [ ] Task: **Red** — extend `web/src/completeMonths.test.ts`:
+- [x] Task: **Red** — extend `web/src/completeMonths.test.ts`:
       `allMonthsExpanded(monthKeys, expanded)` returns `true` only when every
       month key (including `unsorted`) is in the expanded set;
       `nextExpansionSet(monthKeys, expanded)` returns a set with every key
       expanded when not all are, and with every key removed when all are.
-      Confirm the tests fail.
+      Confirm the tests fail. (97545c9)
+- [~] Task: **Green** — implement `allMonthsExpanded` and `nextExpansionSet` in
+      `completeMonths.ts`.
 - [ ] Task: **Green** — implement `allMonthsExpanded` and `nextExpansionSet` in
       `completeMonths.ts`.
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
