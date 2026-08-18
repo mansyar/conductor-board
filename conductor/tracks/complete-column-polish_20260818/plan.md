@@ -14,9 +14,9 @@
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 2 — Count badges & sticky headers
-- [ ] Task: render month-header counts as styled badges (rounded pill) and make
+- [x] Task: render month-header counts as styled badges (rounded pill) and make
       month headers sticky within the page scroll with a solid background (JSX
-      layout exempt).
+      layout exempt). (47ce0ac)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 3 — Expand-all / collapse-all control
