@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { COLUMN_CONFIG, COLUMN_ORDER } from './boardColumns';
 import { branchLabel } from './branchLabel';
-import { groupCardsByMonth } from './completeMonths';
+import {
+  allMonthsExpanded,
+  groupCardsByMonth,
+  nextExpansionSet,
+} from './completeMonths';
 import { filterCards } from './filterCards';
 import { fetchHistory } from './historyApi';
 import { subscribeLive } from './liveSubscribe';
@@ -300,6 +304,16 @@ export function Board({ activeId }: BoardProps) {
     };
   }, [activeId]);
 
+  /** Expands or collapses every month at once and persists the result. */
+  function toggleAllMonths(monthKeys: string[]) {
+    const next = nextExpansionSet(monthKeys, expandedMonths);
+    setExpandedMonths(next);
+    // A failed save keeps the local toggle; the preference resets on load.
+    void savePreferences([...next]).catch(() => {
+      // Ignore persistence failures.
+    });
+  }
+
   /** Toggles a month section and persists the new expanded set. */
   function toggleMonth(key: string) {
     const next = new Set(expandedMonths);
@@ -461,6 +475,8 @@ export function Board({ activeId }: BoardProps) {
               columnId === 'complete' && !filterActive
                 ? groupCardsByMonth(cards)
                 : null;
+            const monthKeys = completeGroups?.map((group) => group.key) ?? [];
+            const allMonthsOpen = allMonthsExpanded(monthKeys, expandedMonths);
             return (
               <section key={columnId} className="space-y-2">
                 <header className="flex items-center gap-2">
@@ -471,6 +487,15 @@ export function Board({ activeId }: BoardProps) {
                   <span className="text-xs text-zinc-500">
                     {columnCards.length}
                   </span>
+                  {monthKeys.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => toggleAllMonths(monthKeys)}
+                      className="ml-auto rounded border border-zinc-800 px-1.5 py-0.5 text-xs text-zinc-400 hover:border-zinc-600 hover:text-zinc-100"
+                    >
+                      {allMonthsOpen ? 'Collapse all' : 'Expand all'}
+                    </button>
+                  )}
                 </header>
                 <div className="space-y-2">
                   {completeGroups !== null ? (
