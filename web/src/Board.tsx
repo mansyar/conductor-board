@@ -486,7 +486,7 @@ export function Board({ activeId }: BoardProps) {
                                 type="button"
                                 onClick={() => toggleMonth(group.key)}
                                 aria-expanded={isExpanded}
-                                className="flex w-full items-center gap-2 rounded border border-zinc-800 bg-zinc-900/50 px-2 py-1.5 text-left hover:border-zinc-600"
+                                className="sticky top-0 z-10 flex w-full items-center gap-2 rounded border border-zinc-800 bg-zinc-950 px-2 py-1.5 text-left hover:border-zinc-600"
                               >
                                 <span className="text-xs text-zinc-500">
                                   {isExpanded ? '▾' : '▸'}
@@ -494,7 +494,7 @@ export function Board({ activeId }: BoardProps) {
                                 <span className="text-sm font-medium text-zinc-200">
                                   {group.label}
                                 </span>
-                                <span className="text-xs text-zinc-500">
+                                <span className="rounded-full bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-300">
                                   {group.cards.length}
                                 </span>
                               </button>
