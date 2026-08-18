@@ -29,3 +29,6 @@
 - [x] Task: render month sections in `web/src/Board.tsx` with expand/collapse
       (default collapsed) and persist toggles (JSX layout exempt). (9027680)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions (1b513c7)
