@@ -13,7 +13,7 @@
       `completeMonths.ts`.
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
-## Phase 2 — Count badges & sticky headers
+## Phase 2 — Count badges & sticky headers [checkpoint: 47ce0ac]
 - [x] Task: render month-header counts as styled badges (rounded pill) and make
       month headers sticky within the page scroll with a solid background (JSX
       layout exempt). (47ce0ac)
