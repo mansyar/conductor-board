@@ -7,8 +7,8 @@
       `nextExpansionSet(monthKeys, expanded)` returns a set with every key
       expanded when not all are, and with every key removed when all are.
       Confirm the tests fail. (97545c9)
-- [~] Task: **Green** — implement `allMonthsExpanded` and `nextExpansionSet` in
-      `completeMonths.ts`.
+- [x] Task: **Green** — implement `allMonthsExpanded` and `nextExpansionSet` in
+      `completeMonths.ts`. (9812d2f)
 - [ ] Task: **Green** — implement `allMonthsExpanded` and `nextExpansionSet` in
       `completeMonths.ts`.
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
