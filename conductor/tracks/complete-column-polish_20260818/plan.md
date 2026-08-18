@@ -9,8 +9,6 @@
       Confirm the tests fail. (97545c9)
 - [x] Task: **Green** — implement `allMonthsExpanded` and `nextExpansionSet` in
       `completeMonths.ts`. (9812d2f)
-- [ ] Task: **Green** — implement `allMonthsExpanded` and `nextExpansionSet` in
-      `completeMonths.ts`.
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 2 — Count badges & sticky headers [checkpoint: 47ce0ac]
@@ -19,7 +17,7 @@
       layout exempt). (47ce0ac)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
-## Phase 3 — Expand-all / collapse-all control
+## Phase 3 — Expand-all / collapse-all control [checkpoint: 9f7adb4]
 - [x] Task: add an "Expand all"/"Collapse all" toggle to the Complete column
       header that flips every month's state via the Phase 1 logic and persists
       it with `savePreferences`; hidden when the column has no months (JSX
