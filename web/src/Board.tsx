@@ -276,10 +276,11 @@ export function Board({ activeId }: BoardProps) {
   }, [activeId, load]);
 
   // Load the persisted expanded-month preference whenever the active project
-  // changes. Failures fall back to the default (all months collapsed).
+  // changes. Reset immediately so the previous project's state never leaks
+  // into the new one; failures fall back to the default (all months collapsed).
   useEffect(() => {
+    setExpandedMonths(new Set());
     if (activeId === null) {
-      setExpandedMonths(new Set());
       return;
     }
     let cancelled = false;
@@ -301,19 +302,17 @@ export function Board({ activeId }: BoardProps) {
 
   /** Toggles a month section and persists the new expanded set. */
   function toggleMonth(key: string) {
-    setExpandedMonths((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-      // A failed save keeps the local toggle; the preference simply resets
-      // on the next load, so the UI stays responsive.
-      void savePreferences([...next]).catch(() => {
-        // Ignore persistence failures.
-      });
-      return next;
+    const next = new Set(expandedMonths);
+    if (next.has(key)) {
+      next.delete(key);
+    } else {
+      next.add(key);
+    }
+    setExpandedMonths(next);
+    // A failed save keeps the local toggle; the preference simply resets on
+    // the next load, so the UI stays responsive.
+    void savePreferences([...next]).catch(() => {
+      // Ignore persistence failures.
     });
   }
 

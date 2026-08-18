@@ -191,6 +191,17 @@ describe('GET/PUT /api/preferences', () => {
     };
     expect(body.expandedMonths).toEqual(['2026-08', '2026-07']);
   });
+
+  test('GET returns 404 when the active project is missing', async () => {
+    const { db, get } = setup();
+    // Point the active setting at a project that no longer exists.
+    db.query('INSERT INTO settings (key, value) VALUES (?, ?)').run(
+      'active_project_id',
+      '999999',
+    );
+    const res = await get('/api/preferences');
+    expect(res.status).toBe(404);
+  });
 });
 
 describe('PUT /api/projects/:id/active', () => {
