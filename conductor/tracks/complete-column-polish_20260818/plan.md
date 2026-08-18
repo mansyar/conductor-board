@@ -20,8 +20,8 @@
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 3 — Expand-all / collapse-all control
-- [ ] Task: add an "Expand all"/"Collapse all" toggle to the Complete column
+- [x] Task: add an "Expand all"/"Collapse all" toggle to the Complete column
       header that flips every month's state via the Phase 1 logic and persists
       it with `savePreferences`; hidden when the column has no months (JSX
-      exempt).
+      exempt). (9f7adb4)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
