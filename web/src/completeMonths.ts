@@ -43,6 +43,35 @@ export function monthBucketLabel(key: string): string {
   return name === undefined ? key : `${name} ${year}`;
 }
 
+/** True when every given month key is currently expanded. */
+export function allMonthsExpanded(
+  monthKeys: string[],
+  expanded: ReadonlySet<string>,
+): boolean {
+  return monthKeys.length > 0 && monthKeys.every((key) => expanded.has(key));
+}
+
+/**
+ * Returns the expanded set after toggling all given months at once: expands
+ * every month when not all are expanded, collapses them otherwise. Keys outside
+ * `monthKeys` (e.g. stale months) are preserved.
+ */
+export function nextExpansionSet(
+  monthKeys: string[],
+  expanded: ReadonlySet<string>,
+): Set<string> {
+  const next = new Set(expanded);
+  const expandAll = !allMonthsExpanded(monthKeys, expanded);
+  for (const key of monthKeys) {
+    if (expandAll) {
+      next.add(key);
+    } else {
+      next.delete(key);
+    }
+  }
+  return next;
+}
+
 /** Groups cards by month, newest month first with the unsorted bucket last. */
 export function groupCardsByMonth(cards: TrackCard[]): MonthGroup[] {
   const byKey = new Map<string, TrackCard[]>();
