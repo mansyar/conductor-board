@@ -10,7 +10,7 @@
       `formatSnapshotDate`. (e5aa28f)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
-## Phase 2 — Totals strip & progress bar (JSX)
+## Phase 2 — Totals strip & progress bar (JSX) [checkpoint: 52da3a2]
 - [x] Task: render the four-block totals strip above the board (phase dot + count
       per lifecycle column) and the slim full-width progress bar under the
       existing "N/M tasks complete · X%" label (JSX layout exempt, driven by
