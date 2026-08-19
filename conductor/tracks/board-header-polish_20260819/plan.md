@@ -18,7 +18,7 @@
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 3 — Sparkline tooltip (JSX)
-- [ ] Task: add hover/focus targets over each snapshot in the sparkline showing
+- [x] Task: add hover/focus targets over each snapshot in the sparkline showing
       its percent and `formatSnapshotDate(observedAt)` date; dismiss on leave
-      (JSX layout exempt).
+      (JSX layout exempt). (55c084f)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
