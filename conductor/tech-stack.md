@@ -56,6 +56,11 @@
   Complete column header gains an expand-all / collapse-all control (pure helpers
   `allMonthsExpanded` / `nextExpansionSet` in `web/src/completeMonths.ts`) that flips
   every month's state and persists it via the same `/api/preferences` endpoints.
+- **Board header polish** (added 2026-08-19) — the header shows a per-column totals
+  strip (phase dot + count via `columnTotals` in `web/src/boardHeader.ts`), a slim
+  full-width progress bar, and hover/focus targets over each sparkline snapshot
+  showing its percent and recorded date (via `formatSnapshotDate` and the extracted
+  `sparklineCoords` helper).
 
 ## Testing
 
