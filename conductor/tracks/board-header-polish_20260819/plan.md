@@ -6,8 +6,8 @@
       columns (idle ignored, unknown column ids ignored); `formatSnapshotDate(iso)`
       formats an ISO timestamp as a short date label (e.g. `Aug 17`), falling back
       to `iso` when unparseable. Confirm the tests fail. (c72a439)
-- [~] Task: **Green** — implement `boardHeader.ts` with `columnTotals` and
-      `formatSnapshotDate`.
+- [x] Task: **Green** — implement `boardHeader.ts` with `columnTotals` and
+      `formatSnapshotDate`. (e5aa28f)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 2 — Totals strip & progress bar (JSX)
