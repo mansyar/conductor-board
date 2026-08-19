@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { COLUMN_CONFIG, COLUMN_ORDER } from './boardColumns';
-import { columnTotals } from './boardHeader';
+import { columnTotals, formatSnapshotDate } from './boardHeader';
 import { branchLabel } from './branchLabel';
 import {
   allMonthsExpanded,
@@ -14,7 +14,7 @@ import { openZed } from './openZed';
 import { fetchPreferences, savePreferences } from './preferencesApi';
 import { relativeTime } from './relativeTime';
 import { renderMarkdown } from './renderMarkdown';
-import { sparklinePoints } from './sparkline';
+import { sparklineCoords } from './sparkline';
 import { trackDocPath } from './trackDocPath';
 import { trendDelta } from './trend';
 import type { Board as BoardModel, HistoryResponse, TrackCard } from './types';
@@ -215,6 +215,7 @@ export function Board({ activeId }: BoardProps) {
   const [toast, setToast] = useState<string | null>(null);
   const [filter, setFilter] = useState('');
   const [expandedMonths, setExpandedMonths] = useState<Set<string>>(new Set());
+  const [hoveredSnapshot, setHoveredSnapshot] = useState<number | null>(null);
   const toastTimer = useRef<number | null>(null);
 
   const loadHistory = useCallback(async () => {
@@ -398,13 +399,13 @@ export function Board({ activeId }: BoardProps) {
   const trend = trendVisible
     ? trendDelta(historySnapshots.map((snapshot) => snapshot.pct))
     : null;
-  const sparkline = trendVisible
-    ? sparklinePoints(
+  const sparklineDots = trendVisible
+    ? sparklineCoords(
         historySnapshots.map((snapshot) => snapshot.pct),
         120,
         32,
       )
-    : '';
+    : [];
 
   const idleCards = board.idle;
   const idleVisible = filterActive ? filterCards(idleCards, filter) : idleCards;
@@ -435,20 +436,66 @@ export function Board({ activeId }: BoardProps) {
           </p>
           {trend !== null && (
             <span className="flex items-center gap-2 text-xs text-zinc-500">
-              <svg
-                className="text-zinc-400"
-                width="120"
-                height="32"
-                viewBox="0 0 120 32"
-                aria-hidden="true"
-              >
-                <polyline
-                  points={sparkline}
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                />
-              </svg>
+              <span className="relative inline-block">
+                <svg
+                  className="text-zinc-400"
+                  width="120"
+                  height="32"
+                  viewBox="0 0 120 32"
+                  aria-hidden="true"
+                >
+                  <polyline
+                    points={sparklineDots
+                      .map((point) => `${point.x},${point.y}`)
+                      .join(' ')}
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  />
+                  {sparklineDots.map((point) => (
+                    <circle
+                      key={`${point.x}-${point.y}`}
+                      cx={point.x}
+                      cy={point.y}
+                      r={2}
+                      fill="currentColor"
+                    />
+                  ))}
+                </svg>
+                {sparklineDots.map((point, index) => (
+                  <button
+                    key={`hit-${point.x}-${point.y}`}
+                    type="button"
+                    aria-label={`${formatSnapshotDate(historySnapshots[index].observedAt)} · ${historySnapshots[index].pct}%`}
+                    onMouseEnter={() => setHoveredSnapshot(index)}
+                    onMouseLeave={() => setHoveredSnapshot(null)}
+                    onFocus={() => setHoveredSnapshot(index)}
+                    onBlur={() => setHoveredSnapshot(null)}
+                    className="absolute z-10 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full"
+                    style={{
+                      left: `${point.x}px`,
+                      top: `${point.y}px`,
+                      width: '16px',
+                      height: '16px',
+                    }}
+                  />
+                ))}
+                {hoveredSnapshot !== null && (
+                  <div
+                    role="tooltip"
+                    className="pointer-events-none absolute z-20 -translate-x-1/2 rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 text-[10px] text-zinc-200 shadow-lg"
+                    style={{
+                      left: `${sparklineDots[hoveredSnapshot].x}px`,
+                      top: `${sparklineDots[hoveredSnapshot].y + 8}px`,
+                    }}
+                  >
+                    {formatSnapshotDate(
+                      historySnapshots[hoveredSnapshot].observedAt,
+                    )}{' '}
+                    · {historySnapshots[hoveredSnapshot].pct}%
+                  </div>
+                )}
+              </span>
               <span>
                 {historySnapshots.length} snapshots ·{' '}
                 {trend.delta > 0 ? '+' : ''}

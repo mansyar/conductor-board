@@ -2,32 +2,49 @@ function round2(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
+export interface SparklinePoint {
+  x: number;
+  y: number;
+}
+
 /**
- * Maps a numeric series to an SVG polyline `points` string within the given
+ * Maps a numeric series to normalized x/y coordinates within the given
  * width/height. Values are normalized against their min/max; a flat series is
- * centered vertically, an empty series yields an empty string, and a single
+ * centered vertically, an empty series yields an empty array, and a single
  * value is placed at the left edge.
  */
-export function sparklinePoints(
+export function sparklineCoords(
   values: number[],
   width: number,
   height: number,
-): string {
+): SparklinePoint[] {
   if (values.length === 0) {
-    return '';
+    return [];
   }
 
   const min = Math.min(...values);
   const max = Math.max(...values);
   const range = max - min;
 
-  return values
-    .map((value, index) => {
-      const x =
-        values.length === 1 ? 0 : round2((index / (values.length - 1)) * width);
-      const normalized = range === 0 ? 0.5 : (value - min) / range;
-      const y = round2(height - normalized * height);
-      return `${x},${y}`;
-    })
+  return values.map((value, index) => {
+    const x =
+      values.length === 1 ? 0 : round2((index / (values.length - 1)) * width);
+    const normalized = range === 0 ? 0.5 : (value - min) / range;
+    const y = round2(height - normalized * height);
+    return { x, y };
+  });
+}
+
+/**
+ * Maps a numeric series to an SVG polyline `points` string within the given
+ * width/height. See `sparklineCoords` for the coordinate mapping.
+ */
+export function sparklinePoints(
+  values: number[],
+  width: number,
+  height: number,
+): string {
+  return sparklineCoords(values, width, height)
+    .map((point) => `${point.x},${point.y}`)
     .join(' ');
 }
