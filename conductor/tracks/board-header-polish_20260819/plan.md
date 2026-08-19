@@ -11,10 +11,10 @@
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 2 — Totals strip & progress bar (JSX)
-- [ ] Task: render the four-block totals strip above the board (phase dot + count
+- [x] Task: render the four-block totals strip above the board (phase dot + count
       per lifecycle column) and the slim full-width progress bar under the
       existing "N/M tasks complete · X%" label (JSX layout exempt, driven by
-      `columnTotals` and `board.progress`).
+      `columnTotals` and `board.progress`). (52da3a2)
 - [ ] Task: Phase Verification & Checkpoint (refer to `workflow.md`)
 
 ## Phase 3 — Sparkline tooltip (JSX)
