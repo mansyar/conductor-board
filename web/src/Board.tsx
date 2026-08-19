@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { COLUMN_CONFIG, COLUMN_ORDER } from './boardColumns';
+import { columnTotals } from './boardHeader';
 import { branchLabel } from './branchLabel';
 import {
   allMonthsExpanded,
@@ -390,6 +391,7 @@ export function Board({ activeId }: BoardProps) {
   }
 
   const { done, total, pct } = board.progress;
+  const totals = columnTotals(board.cards);
   const filterActive = filter.trim() !== '';
   const historySnapshots = history?.snapshots ?? [];
   const trendVisible = historySnapshots.length >= 2;
@@ -409,6 +411,23 @@ export function Board({ activeId }: BoardProps) {
 
   return (
     <div className="space-y-6">
+      <div className="flex flex-wrap gap-2">
+        {COLUMN_ORDER.map((columnId) => {
+          const config = COLUMN_CONFIG[columnId];
+          return (
+            <div
+              key={columnId}
+              className="flex items-center gap-2 rounded border border-zinc-800 bg-zinc-900/50 px-3 py-1.5"
+            >
+              <span className={`h-2 w-2 rounded-full ${config.dot}`} />
+              <span className="text-xs text-zinc-400">{config.label}</span>
+              <span className="text-sm font-medium text-zinc-200">
+                {totals[columnId]}
+              </span>
+            </div>
+          );
+        })}
+      </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <p className="text-sm text-zinc-400">
@@ -453,6 +472,9 @@ export function Board({ activeId }: BoardProps) {
         >
           Refresh
         </button>
+      </div>
+      <div className="h-1 w-full overflow-hidden rounded bg-zinc-800">
+        <div className="h-full bg-zinc-400" style={{ width: `${pct}%` }} />
       </div>
 
       {board.cards.length === 0 && board.idle.length === 0 ? (
