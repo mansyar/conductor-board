@@ -47,10 +47,7 @@ describe('columnTotals', () => {
   });
 
   test('ignores cards with null or unknown column ids', () => {
-    const cards: TrackCard[] = [
-      card('spec-plan', 'a'),
-      card(null, 'b'),
-    ];
+    const cards: TrackCard[] = [card('spec-plan', 'a'), card(null, 'b')];
 
     expect(columnTotals(cards)).toEqual({
       'spec-plan': 1,
