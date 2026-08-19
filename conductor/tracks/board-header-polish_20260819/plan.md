@@ -1,6 +1,6 @@
 # Plan — Polish the board header (totals strip, progress bar, sparkline tooltip)
 
-## Phase 1 — Totals aggregation & tooltip date formatting (pure)
+## Phase 1 — Totals aggregation & tooltip date formatting (pure) [checkpoint: e5aa28f]
 - [~] Task: **Red** — add `web/src/boardHeader.test.ts`:
       `columnTotals(cards)` returns counts per `ColumnId` for the four lifecycle
       columns (idle ignored, unknown column ids ignored); `formatSnapshotDate(iso)`
