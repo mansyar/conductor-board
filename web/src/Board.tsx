@@ -223,6 +223,11 @@ export function Board({ activeId }: BoardProps) {
       setHistory(await fetchHistory());
     } catch {
       setHistory(null);
+    } finally {
+      // The hover targets are indexed by snapshot position; reset so a
+      // shrunk history (project switch or window eviction) never leaves an
+      // out-of-bounds index behind.
+      setHoveredSnapshot(null);
     }
   }, []);
 
@@ -452,9 +457,9 @@ export function Board({ activeId }: BoardProps) {
                     stroke="currentColor"
                     strokeWidth="1.5"
                   />
-                  {sparklineDots.map((point) => (
+                  {sparklineDots.map((point, index) => (
                     <circle
-                      key={`${point.x}-${point.y}`}
+                      key={historySnapshots[index].observedAt}
                       cx={point.x}
                       cy={point.y}
                       r={2}
@@ -464,7 +469,7 @@ export function Board({ activeId }: BoardProps) {
                 </svg>
                 {sparklineDots.map((point, index) => (
                   <button
-                    key={`hit-${point.x}-${point.y}`}
+                    key={`hit-${historySnapshots[index].observedAt}`}
                     type="button"
                     aria-label={`${formatSnapshotDate(historySnapshots[index].observedAt)} · ${historySnapshots[index].pct}%`}
                     onMouseEnter={() => setHoveredSnapshot(index)}
@@ -480,21 +485,22 @@ export function Board({ activeId }: BoardProps) {
                     }}
                   />
                 ))}
-                {hoveredSnapshot !== null && (
-                  <div
-                    role="tooltip"
-                    className="pointer-events-none absolute z-20 -translate-x-1/2 rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 text-[10px] text-zinc-200 shadow-lg"
-                    style={{
-                      left: `${sparklineDots[hoveredSnapshot].x}px`,
-                      top: `${sparklineDots[hoveredSnapshot].y + 8}px`,
-                    }}
-                  >
-                    {formatSnapshotDate(
-                      historySnapshots[hoveredSnapshot].observedAt,
-                    )}{' '}
-                    · {historySnapshots[hoveredSnapshot].pct}%
-                  </div>
-                )}
+                {hoveredSnapshot !== null &&
+                  hoveredSnapshot < sparklineDots.length && (
+                    <div
+                      role="tooltip"
+                      className="pointer-events-none absolute z-20 -translate-x-1/2 rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 text-[10px] text-zinc-200 shadow-lg"
+                      style={{
+                        left: `${sparklineDots[hoveredSnapshot].x}px`,
+                        top: `${sparklineDots[hoveredSnapshot].y + 8}px`,
+                      }}
+                    >
+                      {formatSnapshotDate(
+                        historySnapshots[hoveredSnapshot].observedAt,
+                      )}{' '}
+                      · {historySnapshots[hoveredSnapshot].pct}%
+                    </div>
+                  )}
               </span>
               <span>
                 {historySnapshots.length} snapshots ·{' '}
